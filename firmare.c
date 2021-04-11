@@ -15,9 +15,12 @@
 
 */
 
+uint_16 key;
 
 int main(void) {
 
+    //load secret key from memory
+    key = 0x5;//some secret key
     // poll 
     while(1) {
 
