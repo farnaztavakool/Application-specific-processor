@@ -1,16 +1,18 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-#define key 0xa;//magic key
+#define key 0xaaaa;//magic key
 
 uint_40 output_memory(u_int16_t dataout, uint8 tag);
 
-// memory is a 56 bit component
-// 0-15:    secret key
-// 16-55:   output data {
-//   16-47: data
-//   48-55: tag
-//  }
+/* memory is a 64 bit component
+*   // TODO figure out how to interact, 32 or 16 bits
+*   // TODO work out offsets
+*
+*  - secret key
+*  - output data 
+*  - output key
+*/
 
 
 void input_reg(){
