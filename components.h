@@ -5,13 +5,12 @@
 
 uint_40 output_memory(u_int16_t dataout, uint8 tag);
 
-/* memory is a 64 bit component
-*   // TODO figure out how to interact, 32 or 16 bits
-*   // TODO work out offsets
+/* memory is a 32-bit component
+*   0:      15 downto 0     secret key
+*   1:      31 downto 0     output data
+*   2:      7 downto 0      output key
 *
-*  - secret key
-*  - output data 
-*  - output key
+*   total: 96 bits
 */
 
 
