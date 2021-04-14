@@ -2,7 +2,7 @@
 #   this version assumes 5-stage pipelined processor
 #   with no hazard detection
 #
-#   37 instructions
+#   RECALC instructions
 
     .data
 key:    # the address of key is hardset and known, in memory it'll be at 0                
@@ -12,19 +12,31 @@ key:    # the address of key is hardset and known, in memory it'll be at 0
 
     .text
 main:
-    load	$s1, $0, 0		    # key is at offset 0+0
+    load	$1, $0, 0		    # key is at offset 0+0
     
 while:
-    #clear signals/ set status reg
-    valid <= 0;
-    attack <= 0;
+    # clear signals/ set status reg
+    # busy <=0;
+    # valid <= 0;
+    # attack <= 0;
+    # error <= 0;
+
+    # signal register: busy | attack | error | valid
+    set_sig 0000       # set three bit ctr sig to 000
 
     # current set up is 0 for signal true
-    # TODO are these control signals, or are they stored in registers
     bne		recv, $0, do_receive 	# if recv == 1 then do_receive
-    bne		send, $0, do_send	    # if send == 1 then do_send
+    nop
 
-    j		while				    # jump to while
+recv_done:
+    # reset busy
+    set_sig 0000
+
+    bne		send, $0, do_send	    # if send == 1 then do_send
+    nop
+
+    # j		while				    # jump to while
+    bne     $1, $0, while       # $0 = 0, $1 = AAAA
     nop
     
 
@@ -32,6 +44,9 @@ do_receive:
     # the test bench can theoretically pipe data into regs
     # if not we need an instruction for loading from network
 
+    set_sig 1000    # set busy, WE ARE BUSY PROCESSING IGNORE NEW DATA
+
+    # recieve signal high : data loaded
     # $2 contains input data, 32-bits
     # $3 reserved for parity
     # $4 contains input tag
@@ -54,16 +69,22 @@ do_receive:
     bne		 $7, $4, attack	    # if tag($7) != tag($4) then attack situation
     nop                         # control stall if branch is true
     
-    valid <= 1;
-    j		while				# jump to while
+    # valid <= 1;
+    set_sig 1001                 # set three bit ctr sig to 001
+    # j       recv_done
+    bne     $1, $0, recv_done       # $0 = 0, $1 = AAAA
     nop
     
 attack:
-    attack <= 1;
-    j		while				# jump to while
+    # attack <= 1;
+    set_sig 1100
+    # j		recv_done				# jump to while
+    bne     $1, $0, recv_done       # $0 = 0, $1 = AAAA     
     nop
     
 do_send:
+
+    set_sig 1000    # set busy, WE ARE BUSY PROCESSING IGNORE NEW DATA
 
     # $2 contains input data, 32-bits
     # $3 contains parity
@@ -90,14 +111,16 @@ do_send:
     nop
 
     # write data
-    # TODO determine how to interact with memory
     store $2, $0, (out_location_data)   # store data at 0 + out_location_data
     store $7, $0, (out_location_tag)    # store generated tag at 0 + out_location_tag
 
-    j		while				# jump to while
+    #j		while				# jump to while
+    bne     $1, $0, while       # $0 = 0, $1 = AAAA
     nop
     
 error:
-    soft_error <= '1';
-    j		while				# jump to while
+    # soft_error <= '1';
+    set_sig 1010    
+    # j		while				# jump to while
+    bne     $1, $0, while       # $0 = 0, $1 = AAAA
     nop
