@@ -13,7 +13,6 @@ uint_40 output_memory(u_int16_t dataout, uint8 tag);
 *   total: 96 bits
 */
 
-
 component ASSIGNMENT THING:
     port ( send              : in   std_logic,
            recv              : in   std_logic,
@@ -46,6 +45,10 @@ bit_flip:
 
 
 xor:
+
+
+ALU: 
+    stuff
 
 
 void input_reg(){

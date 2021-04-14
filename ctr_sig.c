@@ -13,9 +13,6 @@
 
 
 
-
-
-
     ######## GENERAL CONTROL SIGNALS ########
     load_status <= '1' when opcode = OP_SET_SIG else
                    '0';
@@ -55,13 +52,6 @@
                             or opcode = OP_SLLI
                             or opcode = OP_SLL) else
                   '0';
-
-    --    alu_minus   : asserted to make the adder component perform a subtraction 
-    --                  of src_b from src_a. 
-    -- TODO MAY NOT NEED            
-    alu_minus  <= '1' when opcode = OP_BNE else
-                  '0';
-    
       
     --     mem_write  : asserted for STORE instructions, so that the data 
     --                  memory contents designated by the address input are
@@ -92,12 +82,14 @@
                   '0';
         
         -- determine which output comes out as output from the alu
-        -- 4 bits wide
+        -- 2 bits wide
             parity  
             bit_flip 
             rol      
             xor      
-        alu_str    <=   '0000'  when opcode = parity
-                        '0001'  when opcode = 
+        alu_str    <=   '00'  when opcode = parity
+                        '01'  when opcode = bit_flip
+                        '10'  when opcode = rol
+                        '11'  when opcode = xor;
 
 */ 
