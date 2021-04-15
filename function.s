@@ -24,18 +24,21 @@ while:
     # signal register: busy | attack | error | valid
     set_sig 0000       # set three bit ctr sig to 000
 
-    # current set up is 0 for signal true
-    bne		recv, $0, do_receive 	# if recv == 1 then do_receive
-    nop
+    # go to do_recieve if recv = 1
+    #                                                   check_recv do_recieve; nop 
+    # handled by hardware:
+    # if recv && not busy <- PC = do_recieve
 
 recv_done:
     # reset busy
     set_sig 0000
 
-    bne		send, $0, do_send	    # if send == 1 then do_send
-    nop
+    # go to do_send if send = 1 
+    #                                                   check_send do_send; nop
+    # handled by hardware:
+    # if send && not busy <- PC = do_send
 
-    # j		while				    # jump to while
+    # unconditional jump to while
     bne     $1, $0, while       # $0 = 0, $1 = AAAA
     nop
     
@@ -45,6 +48,8 @@ do_receive:
     # if not we need an instruction for loading from network
 
     set_sig 1000    # set busy, WE ARE BUSY PROCESSING IGNORE NEW DATA
+    nop             # to allow $2, $3, $4 to load
+    # or some kind of load instruction
 
     # recieve signal high : data loaded
     # $2 contains input data, 32-bits
@@ -85,6 +90,8 @@ attack:
 do_send:
 
     set_sig 1000    # set busy, WE ARE BUSY PROCESSING IGNORE NEW DATA
+    nop             # to allow $2, $3, $4 to load
+    # or some kind of load instruction
 
     # $2 contains input data, 32-bits
     # $3 contains parity

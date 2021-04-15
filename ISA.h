@@ -1,8 +1,7 @@
 /*
         ISA:    draft 
 
-        32-BIT ARCHITECTURE
-        32-BIT INSTRUCTIONS
+        16-BIT ARCHITECTURE
 
         INSTRUCTIONS
     nop
@@ -29,9 +28,8 @@
     set_sig  1000    8
     
     
-        FORMATS: 
-    R-type | opcode(31-28) | rs(27-24) | rt(23-20) | rd(19-16) | empty(15-0) |
-    #R-type | opcode(15-12) | rs(11-8) | rt(7-4) | rd(3-0) |
+        FORMATS:  |
+    R-type | opcode(15-12) | rs(11-8) | rt(7-4) | rd(3-0) |
 
         filp    rd, rs, rt      # flip rs in chunks of 4-bits by rt and store into rd
 
@@ -43,8 +41,8 @@
                                 # lowest bit of rt, store result in rd
 
 
-    I-type | opcode(31-28) | rs(27-24) | rt(23-20) | imm(19-16) | empty(15-0) |   
-    
+    I-type | opcode(15-12) | rs(11-8) | rd(7-4) | imm(3-0) |
+
         load    rd, rt, offset          # load from rt + offset into rd
 
         store   rs, rt, offset          # store rs into rt + offset
@@ -52,5 +50,12 @@
         bne     rs, rt, offset          # if rs != rt branch to PC + offset
 
         set_sig 0,  0,  signal          # put signal into pre-defined status register
+
+
+    J-type | opcode(15-12) | absolute address(11 downto 0) | 
+
+        check_recv address              # does a jump to address if recv signal is high
+
+        check_send address              # does a jump to address if send signal is high
 
 */

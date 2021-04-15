@@ -5,23 +5,23 @@
 
 uint_40 output_memory(u_int16_t dataout, uint8 tag);
 
-/* memory is a 32-bit component
+/* memory is a 16-bit component
 *   0:      15 downto 0     secret key
-*   1:      31 downto 0     output data
-*   2:      7 downto 0      output key
+*   1:      15 downto 0     output data
+*   2:      3 downto 0      output key
 *
-*   total: 96 bits
+*   total: 48 bits
 */
 
 component ASSIGNMENT THING:
     port ( send              : in   std_logic,
            recv              : in   std_logic,
-           network_in        : in   std_logic_vector(39 downto 0),
-           cpu_in            : in   std_logic_vector(32 downto 0),
+           network_in        : in   std_logic_vector(19 downto 0),
+           cpu_in            : in   std_logic_vector(15 downto 0),
            attack            : out  std-logic,
            error             : out  std_logic,
-           network_out       : out  std_logic_vector(39 downto 0),
-           cpu_out           : out  std_logic_vector(32 downto 0));
+           network_out       : out  std_logic_vector(29 downto 0),
+           cpu_out           : out  std_logic_vector(15 downto 0));
 
 
 status_register: 
