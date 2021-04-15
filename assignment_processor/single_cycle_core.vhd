@@ -42,9 +42,17 @@ use IEEE.STD_LOGIC_UNSIGNED.ALL;
 
 
 entity single_cycle_core is
-    port ( reset  : in  std_logic;
-           clk    : in  std_logic; 
-           out_sig_if: out std_logic_vector(15 downto 0) );
+    port ( 
+           reset             : in   std_logic;
+           clk               : in   std_logic; 
+           send              : in   std_logic;
+           recv              : in   std_logic;
+           network_in        : in   std_logic_vector(19 downto 0); -- 4 tag + 16 bit
+           cpu_in            : in   std_logic_vector(16 downto 0); -- 16 bita+ parity
+           attack            : out  std_logic;
+           error             : out  std_logic;
+           network_out       : out  std_logic_vector(39 downto 0);
+           cpu_out           : out  std_logic_vector(32 downto 0));
 end single_cycle_core;
 
 architecture structural of single_cycle_core is
