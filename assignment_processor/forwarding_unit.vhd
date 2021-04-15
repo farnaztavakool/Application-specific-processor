@@ -1,91 +1,64 @@
-----------------------------------------------------------------------------------
--- Company: 
--- Engineer: 
--- 
--- Create Date: 31.03.2021 20:44:17
--- Design Name: 
--- Module Name: forwarding_unit - Behavioral
--- Project Name: 
--- Target Devices: 
--- Tool Versions: 
--- Description: 
--- 
--- Dependencies: 
--- 
--- Revision:
--- Revision 0.01 - File Created
--- Additional Comments:
--- 
-----------------------------------------------------------------------------------
+library ieee;
+use ieee.std_logic_1164.all;
+use ieee.numeric_std.all;
 
-library IEEE;
-use IEEE.STD_LOGIC_1164.ALL;
-use IEEE.STD_LOGIC_ARITH.ALL;
-use IEEE.STD_LOGIC_UNSIGNED.ALL;
+entity forwarding_unit is port (
+	mem_reg_write : in std_logic;
+	mem_rd : in std_logic_vector(3 downto 0);
+	
+	wb_reg_write : in std_logic;
+	wb_rd : in std_logic_vector(3 downto 0);
+	
+	ex_rs : in std_logic_vector(3 downto 0);
+	ex_rt : in std_logic_vector(3 downto 0);
+	
+	
+	alu_a_forward : out std_logic_vector(1 downto 0);
+	alu_b_forward : out std_logic_vector(1 downto 0)
+);
+end entity;
 
-
-entity forwarding_unit is
-    Port (mem_reg_write : in std_logic;
-          wb_reg_write  : in std_logic;
-          mem_rd        : in std_logic_vector(3 downto 0);
-          wb_rd         : in std_logic_vector(3 downto 0);
-          ex_rs         : in std_logic_vector(3 downto 0);
-          ex_rt         : in std_logic_vector(3 downto 0);
-          frwd_ctr_a    : out std_logic_vector(1 downto 0);
-          frwd_ctr_b    : out std_logic_vector(1 downto 0));
-end forwarding_unit;
-
-architecture Behavioral of forwarding_unit is
-
-    -- 00 none
-    -- 01 none
-    -- 10 mem forward
-    -- 11 wb forward
-    
-    signal sig_mem_a : std_logic;
-    signal sig_wb_a  : std_logic; 
-    signal sig_mem_b : std_logic;
-    signal sig_wb_b  : std_logic; 
+architecture behavioural of forwarding_unit is
+	constant FORWARD_NONE : std_logic_vector(1 downto 0) := "00";
+	constant FORWARD_MEM : std_logic_vector(1 downto 0) := "01";
+	constant FORWARD_WB : std_logic_vector(1 downto 0) := "10";
 
 begin
+	process(mem_reg_write, mem_rd, wb_reg_write, wb_rd, ex_rs, ex_rt) begin
+		alu_a_forward <= FORWARD_NONE;
+		alu_b_forward <= FORWARD_NONE;
+		
+		-- Forwarding from mem
+		if mem_reg_write = '1' and
+			mem_rd /= std_logic_vector(to_unsigned(0, mem_rd'length)) and
+			mem_rd = ex_rs then
+			-- Forward mem data to alu a
+				alu_a_forward <= FORWARD_MEM;
+		end if;
+		
+		if mem_reg_write = '1' and
+			mem_rd /= std_logic_vector(to_unsigned(0, mem_rd'length)) and
+			mem_rd = ex_rt then
+			-- Forward mem data to alu b
+				alu_b_forward <= FORWARD_MEM;
+		end if;
+		
+		-- Forwarding from wb
+		if wb_reg_write = '1' and
+			wb_rd /= std_logic_vector(to_unsigned(0, wb_rd'length)) and
+			(mem_reg_write = '0' or mem_rd /= ex_rs) and
+			wb_rd = ex_rs then
+			-- Forward wb to alu a
+				alu_a_forward <= FORWARD_WB;
+		end if;
 
-    
-    sig_mem_a <= '1' when (mem_reg_write = '1' and 
-                           mem_rd /= "0000" and 
-                           ex_rs = mem_rd) else 
-                 '0';
-                 
-    sig_mem_b <= '1' when (mem_reg_write = '1' and 
-                           mem_rd /= "0000" and 
-                           ex_rt = mem_rd) else 
-                 '0';
-    
-    sig_wb_a <= '1' when (wb_reg_write = '1' and
-                          wb_rd /= "0000" and 
-                          (mem_reg_write = '0' or mem_rd /= ex_rs) and 
-                          wb_rd = ex_rs) else 
-                 '0';
-                 
-    sig_wb_b <= '1' when (wb_reg_write = '1' and
-                          wb_rd /= "0000" and 
-                          (mem_reg_write = '0' or mem_rd /= ex_rt) and 
-                          wb_rd = ex_rt) else 
-                 '0';
-    
-    -- ctr signals --
-    frwd_ctr_a(1) <= '1' when (sig_wb_a = '1' or 
-                               sig_mem_a = '1') else 
-                     '0';
-                 
-    frwd_ctr_a(0) <= '1' when (sig_wb_a = '1') else 
-                     '0';
-                     
-    frwd_ctr_b(1) <= '1' when (sig_wb_b = '1' or 
-                               sig_mem_b = '1') else 
-                     '0';
-                 
-    frwd_ctr_b(0) <= '1' when (sig_wb_b = '1') else 
-                     '0';
-    
+		if wb_reg_write = '1' and
+			wb_rd /= std_logic_vector(to_unsigned(0, wb_rd'length)) and
+			(mem_reg_write = '0' or mem_rd /= ex_rt) and
+			wb_rd = ex_rt then
+			-- Forward wb to alu a
+				alu_b_forward <= FORWARD_WB;
+		end if;
 
-end Behavioral;
+	end process;
+end;
