@@ -255,9 +255,34 @@ signal sig_frwd_ctr_b           : std_logic_vector(1 downto 0);
 signal sig_frwd_a               : std_logic_vector(15 downto 0);
 signal sig_frwd_b               : std_logic_vector(15 downto 0);
 
+-- Hardcoded instruction addresses for send/recieve
+
+signal do_recv_addr              : std_logic_vector(3 downto 0);
+signal do_send_addr              : std_logic_vector(3 downto 0);
+signal pc_mux_select             : std_logic_vector(3 downto 0);
+
+-- mux results
+signal sig_next_pc_mux                :std_logic_vector(3 downto 0);
+signal mux_recv_next             :std_logic_vector(3 downto 0);
+signal mux_next_send             :std_logic_vector(3 downto 0);
+
+-- mux signals
+signal recv_busy                  :std_logic;
+signal send_busy                  :std_logic;
+
+
+-- busy|attack|error}valid
+signal set_signal                 :std_logic_vector(3 downto 0);
+
+
+
 begin
 
     out_sig_if <= sig_id_insn;
+    
+    recv_busy <= recv and (not set_signal(0));
+    send_busy <= send and (not set_signal(0));
+    
              
              
     -- IF: instruction fetch
@@ -280,11 +305,29 @@ begin
                src_b     => sig_id_insn(3 downto 0),   -- last 4 bits of last instruction in pipeline
                sum       => sig_branch_pc,   
                carry_out => sig_pc_branch_carry_out );
-    
+               
+               
+            
+    -- next_pc
     next_pc_mux: mux_2to1_4b 
     port map ( mux_select => sig_xor_branch_mux,
                data_a     => sig_pc_inc,
                data_b     => sig_branch_pc,
+               data_out   => sig_next_pc_mux );
+               
+               
+    -- recv mux
+    recv_pc_mux: mux_2to1_4b 
+    port map ( mux_select => recv_busy,
+               data_a     => sig_next_pc_mux,
+               data_b     => do_recv_addr,
+               data_out   => mux_recv_next );
+               
+    -- send mux
+    send_pc_mux: mux_2to1_4b 
+    port map ( mux_select => send_busy,
+               data_a     => mux_recv_next,
+               data_b     => do_send_addr,
                data_out   => sig_next_pc );
     
     insn_mem : instruction_memory 
