@@ -67,7 +67,7 @@ do_receive:
     nop                         
     nop
 
-    XOR      $7, $6             # xor the bits of tag, this is an 8 bit result
+    XOR      $7, $6, $0          # xor the bits of tag, this is an 8 bit result
     nop 
     nop
 
@@ -101,6 +101,7 @@ do_send:
     parity $5, $2, $3       # check parity of input data ($2) with input parity bit ($3), 
                             # put result in rd ($5)
     bne	   $5, $2, error	# if parity error
+    nop
 
     # generating tag
     bit_flip $5, $2, $1         # bit flip data ($2) by key ($1)
@@ -113,7 +114,7 @@ do_send:
     nop                         
     nop
 
-    XOR      $7, $6             # xor the bits of tag, this is an 8 bit result
+    XOR      $7, $6, $0         # xor the bits of tag, this is an 8 bit result
     nop 
     nop
 
