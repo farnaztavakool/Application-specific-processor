@@ -16,7 +16,7 @@ entity io_unit is port (
 	attack_in : in std_logic;
 	error_in : in std_logic;
 	valid_in : in std_logic;
-	status_reg_enable : in std_logic;
+	status_reg_write_enable : in std_logic;
 	cpu_data_avail : in std_logic;	-- aka send
 	net_data_avail : in std_logic;	-- aka recv
 
@@ -44,7 +44,7 @@ begin
 			error_out <= '0';
 			valid_out <= '0';
 
-		elsif falling_edge(clock) and status_reg_enable then
+		elsif falling_edge(clock) and status_reg_write_enable = '1' then
 			-- Normal case
 			busy <= busy_in;
 			attack_out <= attack_in;
@@ -72,7 +72,7 @@ begin
 		(others => '0');
 
 	reg_4 <=
-		"000000000000" & network_in(3 downto 0) when net_data_avil = '1' else
+		"000000000000" & network_in(3 downto 0) when net_data_avail = '1' else
 		(others => '0');
 
 end behaviour;
