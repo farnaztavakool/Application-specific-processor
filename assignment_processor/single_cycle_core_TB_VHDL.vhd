@@ -10,24 +10,24 @@ end Single_cycle_core_TB_VHDL;
 
 architecture behave of Single_cycle_core_TB_VHDL is
 
-  -- 1 GHz = 2 nanoseconds period
-  constant c_CLOCK_PERIOD : time := 2 ns;
+    -- 1 GHz = 2 nanoseconds period
+    constant c_CLOCK_PERIOD : time := 2 ns;
 
 
- signal r_CLOCK     : std_logic := '0';
- signal r_reset    : std_logic := '0';
- signal send       : std_logic := '0';
- signal recv       : std_logic := '0';
- signal network_in : std_logic_vector(19 downto 0) := (others => '0'); -- data read from the network
- signal cpu_in     : std_logic_vector(16 downto 0) := (others => '0'); -- data read from processor
- signal attack     : std_logic := '0';
- signal error      : std_logic := '0';
- signal network_out : std_logic_vector(19 downto 0) := (others => '0'); -- data sent to network
- signal cpu_out      : std_logic_vector(15 downto 0) := (others => '0'); -- data sent to processor
- signal toggle_bit   : std_logic := '0';
- signal busy         : std_logic := '0';
- file file_vectors_network: text;
- file file_vectors_cpu :text;
+    signal r_CLOCK     : std_logic := '0';
+    signal r_reset    : std_logic := '0';
+    signal send       : std_logic := '0';
+    signal recv       : std_logic := '0';
+    signal network_in : std_logic_vector(19 downto 0) := (others => '0'); -- data read from the network
+    signal cpu_in     : std_logic_vector(16 downto 0) := (others => '0'); -- data read from processor
+    signal attack     : std_logic := '0';
+    signal error      : std_logic := '0';
+    signal network_out : std_logic_vector(19 downto 0) := (others => '0'); -- data sent to network
+    signal cpu_out      : std_logic_vector(15 downto 0) := (others => '0'); -- data sent to processor
+    signal toggle_bit   : std_logic := '0';
+    signal busy         : std_logic := '0';
+    file file_vectors_network: text;
+    file file_vectors_cpu :text;
 
 
 
@@ -111,23 +111,23 @@ begin
                 send <= '0';
                 recv <= '1';
             else
-            toggle_bit <= '1';
-            recv       <= '0';
-            --send <= '0';
+                toggle_bit <= '1';
+                recv       <= '0';
+                --send <= '0';
             end if;
         else
-        if (not endfile(file_vectors_cpu)) then
-            readline(file_VECTORS_cpu, v_line_cpu);
-            read(v_LINE_cpu, cpu_data);
-            network_in <= cpu_data;
-            toggle_bit <= '0';
-            send <= '1';
-            recv <= '0';
-        else
-            toggle_bit <= '0';
-            send <= '0';
-            --send <= '0';
-        end if;
+            if (not endfile(file_vectors_cpu)) then
+                readline(file_VECTORS_cpu, v_line_cpu);
+                read(v_LINE_cpu, cpu_data);
+                network_in <= cpu_data;
+                toggle_bit <= '0';
+                send <= '1';
+                recv <= '0';
+            else
+                toggle_bit <= '0';
+                send <= '0';
+                --send <= '0';
+            end if;
         end if;
     end if;
 end process;
