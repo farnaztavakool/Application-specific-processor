@@ -70,25 +70,22 @@ begin
         var_read_addr_b := conv_integer(read_register_b);
         var_write_addr  := conv_integer(write_register);
 
-        -- Writing to regs 234 is forbidden
-        if var_write_addr = 2 or var_write_addr = 3 or var_write_addr = 4 then
-            var_write_addr := 0;
-        end if;
-
         if (reset = '1') then
             -- initial values of the registers - reset to zeroes
             var_regfile := (others => X"0000");
 
-        elsif (clk = '1' and write_enable = '1') then
-            -- register write on the rising clock edge
-            var_regfile(var_write_addr) := write_data;
+        elsif clk = '1' then
+        	if write_enable = '1' and var_write_addr /= 2 and var_write_addr /= 3 and var_write_addr /= 4 then
+				-- register write on the rising clock edge
+				var_regfile(var_write_addr) := write_data;
+			end if;
 
-        elsif clk = '1' and write_enable_special = '1' then
-            -- Special case for regs 234
-            var_regfile(2) := reg_2_write_data;
-            var_regfile(3) := reg_3_write_data;
-            var_regfile(4) := reg_4_write_data;
-
+        	if write_enable_special = '1' then
+				-- Special case for regs 234
+				var_regfile(2) := reg_2_write_data;
+				var_regfile(3) := reg_3_write_data;
+				var_regfile(4) := reg_4_write_data;
+			end if;
         elsif (clk = '0') then
             -- read on falling edge
             -- enforces value zero for register $0
