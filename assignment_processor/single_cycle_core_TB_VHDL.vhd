@@ -1,4 +1,3 @@
-
 library ieee;
 use ieee.std_logic_1164.all;
 use ieee.numeric_std.all;
@@ -19,12 +18,12 @@ architecture behave of Single_cycle_core_TB_VHDL is
  signal r_reset    : std_logic := '0';
  signal send       : std_logic := '0';
  signal recv       : std_logic := '0';
- signal network_in : std_logic_vector;
- signal cpu_in     : std_logic_vector;
+ signal network_in : std_logic_vector(20 downto 0) := (others => '0'); --data sent to network
+ signal cpu_in     : std_logic_vector(15 downto 0) := (others => '0'); --data sent to processor
  signal attack     : std_logic := '0'; 
  signal error      : std_logic := '0';
- signal network_out : std_logic_vector(39 downto 0) := (others => '0');
- signal cpu_out      : std_logic_vector(15 downto 0) := (others => '0');
+ signal network_out : std_logic_vector(19 downto 0) := (others => '0'); -- data read from network
+ signal cpu_out      : std_logic_vector(16 downto 0) := (others => '0'); -- data read from processor
  signal toggle_bit   : std_logic := '0';
  signal busy         : std_logic := '0';
  file file_vectors_network: text;
