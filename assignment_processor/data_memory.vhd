@@ -53,9 +53,9 @@ begin
         
         if (reset = '1') then
             -- initial values of the data memory : reset to zero 
-            var_data_mem(0)  := X"AAAA"; -- secret key
-            var_data_mem(1)  := X"1234";
-            var_data_mem(2)  := X"0000";
+            var_data_mem(0)  := X"AAAA"; -- 16 bit secret key
+            var_data_mem(1)  := X"0000"; -- 16 bit data
+            var_data_mem(2)  := X"0000"; -- 0s and 4bit tag value
 
 
         elsif (falling_edge(clk) and write_enable = '1') then
