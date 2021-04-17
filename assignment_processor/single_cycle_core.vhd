@@ -188,7 +188,8 @@ component io_unit is port (
 	reg_3 : out std_logic_vector(15 downto 0);
 	reg_4 : out std_logic_vector(15 downto 0)
 );
-component ALU_wrapper
+end component;
+component ALU_wrapper is
   Port (src_a   : in  std_logic_vector(15 downto 0);
         src_b   : in  std_logic_vector(15 downto 0);
         ctr     : in  std_logic_vector(1 downto 0);
