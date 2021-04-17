@@ -3,12 +3,12 @@
 
 #define key 0xaaaa;//magic key
 
-uint_40 output_memory(u_int16_t dataout, uint8 tag);
+uint_32 output_memory(u_int16_t dataout, uint16 tag);
 
 /* memory is a 16-bit component
 *   0:      15 downto 0     secret key
 *   1:      15 downto 0     output data
-*   2:      3 downto 0      output key
+*   2:      15 downto 0      output key ##only 3 downto 0 will be used others are 0
 *
 *   total: 48 bits
 */
@@ -58,3 +58,18 @@ void input_reg(){
     output : {datain & tag(20bits), dataout & parity(17 bits)}
     */
 }
+/**
+ * 
+ * 
+ */
+/*
+component data_memory is
+    port ( reset        : in  std_logic;
+           clk          : in  std_logic;
+           write_enable : in  std_logic;
+           write_data   : in  std_logic_vector(15 downto 0);
+           addr_in      : in  std_logic_vector(3 downto 0);
+           data_net     : out std_logic_vector(31 downto 0);
+           data_out     : out std_logic_vector(15 downto 0) );
+end component;
+*/
