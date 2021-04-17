@@ -61,43 +61,46 @@ begin
             
             -- bne jumps -> pc + offset + 1
             
-            var_insn_mem(0)  := X"101C";    -- load  $1, $0, C
-            var_insn_mem(1)  := X"102D";    -- load  $2, $0, D
-            var_insn_mem(2)  := X"103E";    -- load  $3, $0, E
-            var_insn_mem(3)  := X"104F";    -- load  $4, $0, F
-
-            var_insn_mem(4)  := X"8121";    -- add $1, $1, $2
-            var_insn_mem(5)  := X"5131";    -- sll $1, $1, $3
-            var_insn_mem(6)  := X"3032";    -- store $3, $0, 2
+            -- test ALU
+            var_insn_mem(0)  := X"1201";    -- load     $2, 1   -- load dummy data
+            var_insn_mem(1)  := X"1100";    -- load     $1, 0   -- load secret key
+            var_insn_mem(2)  := X"0000";    -- nop
+            var_insn_mem(3)  := X"7235";    -- parity   $5, $2, $3
+            var_insn_mem(4)  := X"4215";    -- bit_flip $5, $2, $1
+            var_insn_mem(5)  := X"5216";    -- rol      $6, $2, $1
+            var_insn_mem(6)  := X"6207";    -- xor      $7, $2, $0
+            var_insn_mem(7)  := X"0000";    -- nop
+            var_insn_mem(8)  := X"0000";    -- nop
+            var_insn_mem(9)  := X"0000";    -- nop
+            var_insn_mem(10) := X"0000";    -- nop
+            var_insn_mem(11) := X"0000";    -- nop
+            var_insn_mem(12) := X"0000";    -- nop
+            var_insn_mem(13) := X"0000";    -- nop
+            var_insn_mem(14) := X"0000";    -- nop
+            var_insn_mem(15) := X"0000";    -- nop
             
-            var_insn_mem(7)  := X"1052";    -- load  $5, $0, 2
-            var_insn_mem(8)  := X"2112";    -- bne   $1, $1, 2
-            var_insn_mem(9)  := X"2212";    -- bne   $1, $2, 2
-            var_insn_mem(10) := X"0000";
-            var_insn_mem(11) := X"0000";
-            var_insn_mem(12) := X"3018";    -- store $1, $0, 8
-            var_insn_mem(13) := X"0000";
-            var_insn_mem(14) := X"0000";
-            var_insn_mem(15) := X"0000";
             
-            -- other instructions for another test case
-            --var_insn_mem(0)  := X"101C";    -- load  $1, $0, C
-            --var_insn_mem(1)  := X"102D";    -- load  $2, $0, D
-            --var_insn_mem(2)  := X"103E";    -- load  $3, $0, E
-            --var_insn_mem(3)  := X"104F";    -- load  $4, $0, F
-
-            --var_insn_mem(4)  := X"8121";    -- add $1, $1, $2
-            --var_insn_mem(5)  := X"8131";    -- add $1, $1, $3
-            --var_insn_mem(6)  := X"5131";    -- sll $1, $1, $3
-            --var_insn_mem(7)  := X"3132";    -- store $3, $1, 2
-            --var_insn_mem(8)  := X"3013";    -- store $1, $0, 3
-            
-            --var_insn_mem(10) := X"2112";    -- bne   $1, $1, 2
-            --var_insn_mem(11) := X"2213";    -- bne   $1, $2, 3
-            --var_insn_mem(12) := X"0000";
-            --var_insn_mem(13) := X"0000";
-            --var_insn_mem(14) := X"0000";
-            --var_insn_mem(15) := X"3018";    -- store $1, $0, 8
+            -- do_send
+            --var_insn_mem(0)  := X"1010";    -- load     $1, $0, 0   -- load secret key
+            --var_insn_mem(1)  := X"1021";    -- load     $2, $0, 1   -- load dummy data
+            --var_insn_mem(2)  := X"8008";    -- set_sig 1000
+            --var_insn_mem(3)  := X"0000";    -- nop
+            --var_insn_mem(4)  := X"7235";    -- parity   $5, $2, $3
+            --var_insn_mem(5)  := X"2520";    -- bne      $5, $2, error=0
+            --var_insn_mem(6)  := X"0000";    -- nop
+            --var_insn_mem(7)  := X"4215";    -- bit_flip $5, $2, $1
+            --var_insn_mem(8)  := X"0000";    -- nop
+            --var_insn_mem(9)  := X"0000";    -- nop
+            --var_insn_mem(10) := X"5516";    -- rol      $6, $5, $1
+            --var_insn_mem(11) := X"0000";    -- nop
+            --var_insn_mem(12) := X"0000";    -- nop
+            --var_insn_mem(13) := X"6607";    -- xor      $7, $6, $0
+            --var_insn_mem(14) := X"0000";    -- nop
+            --var_insn_mem(15) := X"0000";    -- nop
+            --var_insn_mem(16) := X"3020";    -- store $2, $0, out_location_data = 0
+            --var_insn_mem(17) := X"3070";    -- store $7, $0, out_location_tag = 0
+            --var_insn_mem(18) := X"2100";    -- bne      $1, $0, while=0
+            --var_insn_mem(19) := X"0000";    -- nop
             
         
         elsif (falling_edge(clk)) then
