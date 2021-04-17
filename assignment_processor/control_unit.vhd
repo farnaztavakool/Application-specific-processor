@@ -53,45 +53,38 @@ entity control_unit is
            reg_dst    : out std_logic;
            reg_write  : out std_logic;
            alu_src    : out std_logic;
-           alu_ctr    : out std_logic;
+           alu_ctr    : out std_logic_vector(1 downto 0);
            mem_write  : out std_logic;
            mem_to_reg : out std_logic;
-           alu_minus  : out std_logic;
            branch     : out std_logic);
 end control_unit;
 
 architecture behavioural of control_unit is
 
-constant OP_LOAD  : std_logic_vector(3 downto 0) := "0001";
-constant OP_STORE : std_logic_vector(3 downto 0) := "0011";
-constant OP_ADD   : std_logic_vector(3 downto 0) := "1000";
-constant OP_SLLI  : std_logic_vector(3 downto 0) := "0100";
-constant OP_SLL   : std_logic_vector(3 downto 0) := "0101";
-constant OP_BNE   : std_logic_vector(3 downto 0) := "0010";
+constant OP_LOAD   : std_logic_vector(3 downto 0) := "0001";
+constant OP_BNE    : std_logic_vector(3 downto 0) := "0010";
+constant OP_STORE  : std_logic_vector(3 downto 0) := "0011";
+constant OP_BF     : std_logic_vector(3 downto 0) := "0100";    -- TODO
+constant OP_ROL    : std_logic_vector(3 downto 0) := "0101";    -- TODO
+constant OP_XOR    : std_logic_vector(3 downto 0) := "0110";    -- TODO
+constant OP_PARITY : std_logic_vector(3 downto 0) := "0111";    -- TODO
+constant OP_SETSIG : std_logic_vector(3 downto 0) := "1000";    -- TODO
+
+
+
 
 begin
 
-    reg_dst    <= '1' when (opcode = OP_ADD
-                            or opcode = OP_SLL) else
+    reg_dst    <= '1' when (opcode = OP_ROL) else
                   '0';
 
-    reg_write  <= '1' when (opcode = OP_ADD 
-                            or opcode = OP_LOAD
-                            or opcode = OP_SLLI
-                            or opcode = OP_SLL) else
+    reg_write  <= '1' when (opcode = OP_ROL 
+                            or opcode = OP_LOAD) else
                   '0';
     
     alu_src    <= '1' when (opcode = OP_LOAD 
-                           or opcode = OP_STORE
-                           or opcode = OP_SLLI) else
-                  '0';
-    -- without an adder we wont need this              
-    alu_minus  <= '1' when opcode = OP_BNE else
-                  '0';
-    
-    alu_ctr    <= '0' when (opcode = OP_SLLI
-                            or opcode = OP_SLL) else
-                  '1';    
+                           or opcode = OP_STORE) else
+                  '0';  
              
     mem_write  <= '1' when opcode = OP_STORE else
                   '0';
@@ -101,5 +94,23 @@ begin
                  
     branch     <= '1' when opcode = OP_BNE else 
                   '0';
+        
+    -- alu ctr          
+    process (opcode)
+    begin
+        if (opcode = OP_BF) then 
+            alu_ctr <= "00";
+            
+        elsif (opcode = OP_ROL) then 
+            alu_ctr <= "01";
+            
+        elsif (opcode = OP_XOR) then 
+            alu_ctr <= "10";
+            
+        else -- OP_PARITY
+            alu_ctr <= "11";
+            
+        end if;
+    end process;              
 
 end behavioural;

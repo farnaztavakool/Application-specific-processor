@@ -87,10 +87,9 @@ component control_unit is
            reg_dst    : out std_logic;
            reg_write  : out std_logic;
            alu_src    : out std_logic;
-           alu_ctr    : out std_logic;
+           alu_ctr    : out std_logic_vector(1 downto 0);
            mem_write  : out std_logic;
            mem_to_reg : out std_logic;
-           alu_minus  : out std_logic;
            branch     : out std_logic );
 end component;
 
@@ -111,21 +110,6 @@ component adder_4b is
            src_b     : in  std_logic_vector(3 downto 0);
            sum       : out std_logic_vector(3 downto 0);
            carry_out : out std_logic );
-end component;
-
-component n_left_shifter is
-    port ( src_a     : in  std_logic_vector(15 downto 0);
-           src_b     : in  std_logic_vector(15 downto 0);
-           shift     : out std_logic_vector(15 downto 0));
-end component;
-
-component adder_16b is
-    port ( src_a     : in  std_logic_vector(15 downto 0);
-           src_b     : in  std_logic_vector(15 downto 0);
-           minus     : in std_logic;
-           sum       : out std_logic_vector(15 downto 0);
-           carry_out : out std_logic; 
-           zero      : out std_logic);
 end component;
 
 component data_memory is
@@ -165,6 +149,13 @@ component mux_4to1_16b is
         data_out   : out std_logic_vector(15 downto 0));
 end component;
 
+component ALU_wrapper
+  Port (src_a   : in  std_logic_vector(15 downto 0);
+        src_b   : in  std_logic_vector(15 downto 0);
+        ctr     : in  std_logic_vector(1 downto 0);
+        alu_out : out std_logic_vector(15 downto 0));
+end component;
+
 -- signal labelling scheme: if it exisits in a stage, then that stage will be in the name
 -- this is particularly needed when the signal is propogated through to other stages
 signal sig_next_pc              : std_logic_vector(3 downto 0);
@@ -179,9 +170,8 @@ signal sig_sign_extended_offset : std_logic_vector(15 downto 0);
 signal sig_reg_dst              : std_logic;
 signal sig_reg_write            : std_logic;
 signal sig_alu_src              : std_logic;
-signal sig_alu_minus            : std_logic;
 signal sig_branch               : std_logic;
-signal sig_alu_ctr              : std_logic;
+signal sig_alu_ctr              : std_logic_vector(1 downto 0);
 signal sig_mem_write            : std_logic;
 signal sig_mem_to_reg           : std_logic;
 signal sig_write_register       : std_logic_vector(3 downto 0);
@@ -189,48 +179,43 @@ signal sig_write_data           : std_logic_vector(15 downto 0);
 signal sig_read_data_a          : std_logic_vector(15 downto 0);
 signal sig_read_data_b          : std_logic_vector(15 downto 0);
 signal sig_alu_src_b            : std_logic_vector(15 downto 0);
-signal sig_alu_result           : std_logic_vector(15 downto 0);
 signal sig_alu_ctr_out          : std_logic_vector(15 downto 0);
-signal sig_alu_sll_result       : std_logic_vector(15 downto 0);
-signal sig_alu_carry_out        : std_logic;
-signal sig_alu_zero             : std_logic;
 signal sig_data_mem_out         : std_logic_vector(15 downto 0);
-signal sig_branch_mux           : std_logic;
 -- pipeline register signals
 -- id
 signal sig_id_insn              : std_logic_vector(15 downto 0);
 signal sig_xor_same             : std_logic;
 signal sig_xor                  : std_logic_vector(15 downto 0);
 signal sig_xor_branch_mux       : std_logic; 
+signal sig_addr                 : std_logic_vector(15 downto 0);
 -- ex
-signal sig_ex_in                : std_logic_vector(79 downto 0);
-signal sig_ex_out               : std_logic_vector(79 downto 0);
+signal sig_ex_in                : std_logic_vector(94 downto 0);
+signal sig_ex_out               : std_logic_vector(94 downto 0);
 signal sig_ex_insn              : std_logic_vector(15 downto 0);
 signal sig_ex_reg_dst           : std_logic;
 signal sig_ex_reg_write         : std_logic;
 signal sig_ex_alu_src           : std_logic;
-signal sig_ex_alu_ctr           : std_logic;
+signal sig_ex_alu_ctr           : std_logic_vector(1 downto 0);
 signal sig_ex_mem_write         : std_logic;
 signal sig_ex_mem_to_reg        : std_logic;
 signal sig_ex_alu_minus         : std_logic;
-signal sig_ex_branch            : std_logic;
 signal sig_ex_read_data_a       : std_logic_vector(15 downto 0);
 signal sig_ex_read_data_b       : std_logic_vector(15 downto 0);
 signal sig_ex_reg_1             : std_logic_vector(3 downto 0);
 signal sig_ex_reg_2             : std_logic_vector(3 downto 0);
 signal sig_ex_sign_extended_offset : std_logic_vector(15 downto 0);
+signal sig_ex_addr                 : std_logic_vector(15 downto 0);
 -- mem
-signal sig_mem_in               : std_logic_vector(56 downto 0);
-signal sig_mem_out              : std_logic_vector(56 downto 0);
+signal sig_mem_in               : std_logic_vector(70 downto 0);
+signal sig_mem_out              : std_logic_vector(70 downto 0);
 signal sig_mem_insn             : std_logic_vector(15 downto 0);
 signal sig_mem_mem_write        : std_logic;
 signal sig_mem_mem_to_reg       : std_logic;
-signal sig_mem_branch           : std_logic;
 signal sig_mem_write_register   : std_logic_vector(3 downto 0);
 signal sig_mem_alu_ctr_out      : std_logic_vector(15 downto 0);
 signal sig_mem_read_data_b      : std_logic_vector(15 downto 0);
-signal sig_mem_alu_zero         : std_logic;
 signal sig_mem_reg_write        : std_logic;
+signal sig_mem_addr                 : std_logic_vector(15 downto 0);
 -- wb
 signal sig_wb_in                : std_logic_vector(53 downto 0);
 signal sig_wb_out               : std_logic_vector(53 downto 0);
@@ -305,10 +290,10 @@ begin
                     '0';
     sig_xor_branch_mux <= NOT sig_xor_same and sig_branch;
     
-
+    -- TODO can remove
     sign_extend : sign_extend_4to16 
     port map ( data_in  => sig_id_insn(3 downto 0),
-               data_out => sig_sign_extended_offset );
+               data_out => sig_addr );
 
     ctrl_unit : control_unit 
     port map ( opcode     => sig_id_insn(15 downto 12),
@@ -318,7 +303,6 @@ begin
                alu_ctr    => sig_alu_ctr,
                mem_write  => sig_mem_write,
                mem_to_reg => sig_mem_to_reg,
-               alu_minus  => sig_alu_minus,
                branch     => sig_branch );
 
     reg_file : register_file 
@@ -347,31 +331,29 @@ begin
     --      sig_reg_dst                 0
     --      sig_reg_write               1
     --      sig_alu_src                 2
-    --      sig_alu_ctr                 3
-    --      sig_mem_write               4
-    --      sig_mem_to_reg              5
-    --      sig_alu_minus               6
-    --      sig_branch                  7
+    --      sig_alu_ctr                 4-3
+    --      sig_mem_write               5
+    --      sig_mem_to_reg              6
     -- 
-    --      sig_read_data_a             23-8
-    --      sig_read_data_b             39-24
-    --      sig_id_insn(7 downto 4)     43-40    sig_ex_reg_1 
-    --      sig_id_insn(3 downto 0)     47-44    sig_ex_reg_2
-    --      sig_sign_extended_offset    63-48
+    --      sig_read_data_a             22-7
+    --      sig_read_data_b             38-23
+    --      sig_id_insn(7 downto 4)     42-39    sig_ex_reg_1 
+    --      sig_id_insn(3 downto 0)     46-43    sig_ex_reg_2
+    --      sig_sign_extended_offset    62-47
     --                                                          ^   concationate in this direction
-    --      sig_id_insn                 79-64                   |
+    --      sig_id_insn                 78-63                   |
+    --      sig_addr                    94-79
     
     
     -- set up in signal 
     -- SIGNALS MUST BE CONCATIONATED FROM HIGHEST TO LOWEST
-    sig_ex_in <=    sig_id_insn &
+    sig_ex_in <=    sig_addr &
+                    sig_id_insn &
                     sig_sign_extended_offset &
                     sig_id_insn(3 downto 0) &
                     sig_id_insn(7 downto 4) &
                     sig_read_data_b &
                     sig_read_data_a &
-                    sig_branch &
-                    sig_alu_minus &
                     sig_mem_to_reg &
                     sig_mem_write &
                     sig_alu_ctr & 
@@ -383,20 +365,19 @@ begin
     sig_ex_reg_dst              <= sig_ex_out(0);
     sig_ex_reg_write            <= sig_ex_out(1);
     sig_ex_alu_src              <= sig_ex_out(2);
-    sig_ex_alu_ctr              <= sig_ex_out(3);
-    sig_ex_mem_write            <= sig_ex_out(4);
-    sig_ex_mem_to_reg           <= sig_ex_out(5);
-    sig_ex_alu_minus            <= sig_ex_out(6);
-    sig_ex_branch               <= sig_ex_out(7);
-    sig_ex_read_data_a          <= sig_ex_out(23 downto 8);
-    sig_ex_read_data_b          <= sig_ex_out(39 downto 24);
-    sig_ex_reg_1                <= sig_ex_out(43 downto 40);
-    sig_ex_reg_2                <= sig_ex_out(47 downto 44);
-    sig_ex_sign_extended_offset <= sig_ex_out(63 downto 48);
-    sig_ex_insn                 <= sig_ex_out(79 downto 64);
+    sig_ex_alu_ctr              <= sig_ex_out(4 downto 3);
+    sig_ex_mem_write            <= sig_ex_out(5);
+    sig_ex_mem_to_reg           <= sig_ex_out(6);
+    sig_ex_read_data_a          <= sig_ex_out(22 downto 7);
+    sig_ex_read_data_b          <= sig_ex_out(38 downto 23);
+    sig_ex_reg_1                <= sig_ex_out(42 downto 39);
+    sig_ex_reg_2                <= sig_ex_out(46 downto 43);
+    sig_ex_sign_extended_offset <= sig_ex_out(62 downto 47);
+    sig_ex_insn                 <= sig_ex_out(78 downto 63);
+    sig_ex_addr                 <= sig_ex_out(94 downto 79);
     
     id_ex_reg : regne
-    generic map( N => 80 )
+    generic map( N => 95 )
     port map ( D        => sig_ex_in,
 			   Resetn	=> reset,
 			   clk    	=> clk,
@@ -443,30 +424,12 @@ begin
                 data_out   => sig_frwd_b);
     
     
-    -- ALU using forwarding logic
-    -- TODO add ALU wrapper
-    alu : adder_16b 
-    port map ( --src_a     => sig_ex_read_data_a,   -- original signal before data forwarder
-               --src_b     => sig_alu_src_b,
-               src_a     => sig_frwd_a,
-               src_b     => sig_frwd_b,
-               minus     => sig_ex_alu_minus,
-               sum       => sig_alu_result,
-               carry_out => sig_alu_carry_out, 
-               zero      => sig_alu_zero);      
-               
-    alu_sll : n_left_shifter
-    port map ( --src_a     => sig_ex_read_data_a,
-               --src_b     => sig_alu_src_b,
-               src_a     => sig_frwd_a,
-               src_b     => sig_frwd_b,
-               shift     => sig_alu_sll_result );
-               
-    mux_alu_ctr : mux_2to1_16b 
-    port map ( mux_select => sig_ex_alu_ctr,
-               data_a     => sig_alu_sll_result,
-               data_b     => sig_alu_result,
-               data_out   => sig_alu_ctr_out ); 
+    -- ALU not using forwarding logic
+    alu: ALU_wrapper
+      Port map (src_a   => sig_ex_read_data_a,
+                src_b   => sig_alu_src_b,
+                ctr     => sig_ex_alu_ctr,
+                alu_out => sig_alu_ctr_out);
 
 
     -- MEM: memory access
@@ -474,52 +437,50 @@ begin
     -- EX/MEM register                 offset
     --      sig_ex_mem_write              0
     --      sig_ex_mem_to_reg             1
-    --      sig_ex_branch                 2
-    --      sig_write_register          6-3
-    --      sig_alu_ctr_out             22-7
-    --      sig_ex_read_data_b          38-23
-    --      sig_alu_zero                39
-    --      sig_ex_reg_write            40
-    --      sig_ex_insn                 56-41   ^ concatonate this direction
+    --      sig_write_register          5-2
+    --      sig_alu_ctr_out             21-6
+    --      sig_ex_read_data_b          37-22
+    --      sig_ex_reg_write            38
+    --      sig_ex_insn                 54-39   ^ concatonate this direction
+    --      sig_ex_addr                 70-55
     
     -- set up in signals 
     -- SIGNALS MUST BE CONCATIONATED FROM HIGHEST TO LOWEST
-    sig_mem_in <=   sig_ex_insn &
+    sig_mem_in <=   sig_ex_addr &
+                    sig_ex_insn &
                     sig_ex_reg_write &
-                    sig_alu_zero & 
                     sig_ex_read_data_b &
                     sig_alu_ctr_out & 
                     sig_write_register &
-                    sig_ex_branch &
                     sig_ex_mem_to_reg &
                     sig_ex_mem_write;
     
     -- set up out signals
     sig_mem_mem_write         <= sig_mem_out(0);
     sig_mem_mem_to_reg        <= sig_mem_out(1);
-    sig_mem_branch            <= sig_mem_out(2);
-    sig_mem_write_register    <= sig_mem_out(6 downto 3);
-    sig_mem_alu_ctr_out       <= sig_mem_out(22 downto 7);
-    sig_mem_read_data_b       <= sig_mem_out(38 downto 23);
-    sig_mem_alu_zero          <= sig_mem_out(39);
-    sig_mem_reg_write         <= sig_mem_out(40);
-    sig_mem_insn              <=  sig_mem_out(56 downto 41);
+    sig_mem_write_register    <= sig_mem_out(5 downto 2);
+    sig_mem_alu_ctr_out       <= sig_mem_out(21 downto 6);
+    sig_mem_read_data_b       <= sig_mem_out(37 downto 22);
+    sig_mem_reg_write         <= sig_mem_out(38);
+    sig_mem_insn              <= sig_mem_out(54 downto 39);
+    sig_mem_addr              <= sig_mem_out(70 downto 55);
+    
+    
     
     ex_mem_reg : regne
-    generic map( N => 57 )
+    generic map( N => 71 )
     port map ( D        => sig_mem_in,
 			   Resetn	=> reset,
 			   clk    	=> clk,
 			   Q 		=> sig_mem_out );
-    
-    sig_branch_mux <= NOT sig_mem_alu_zero and sig_mem_branch;
 
     data_mem : data_memory 
     port map ( reset        => reset,
                clk          => clk,
                write_enable => sig_mem_mem_write,
                write_data   => sig_mem_read_data_b,
-               addr_in      => sig_mem_alu_ctr_out(3 downto 0),
+               --addr_in      => sig_mem_alu_ctr_out(3 downto 0),
+               addr_in      => sig_mem_addr(3 downto 0),
                data_out     => sig_data_mem_out );
      
     

@@ -53,8 +53,8 @@ begin
         
         if (reset = '1') then
             -- initial values of the data memory : reset to zero 
-            var_data_mem(0)  := X"aaaa";--keyvalue
-            var_data_mem(1)  := X"0000";
+            var_data_mem(0)  := X"AAAA"; -- secret key
+            var_data_mem(1)  := X"1234";
             var_data_mem(2)  := X"0000";
 
 
