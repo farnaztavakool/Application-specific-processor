@@ -316,13 +316,15 @@ begin
 
 --    out_sig_if <= sig_id_insn;
 
-    recv_busy <= recv and (not set_signal(0));
-    send_busy <= send and (not set_signal(0));
+   
 
     busy <= set_signal(3);
     attack <= set_signal(2);
     error <= set_signal(1);
     attack <= set_signal(0);
+    
+    recv_busy <= recv and (not set_signal(3));
+    send_busy <= send and (not set_signal(3));
 
 
     -- IF: instruction fetch
@@ -340,12 +342,9 @@ begin
                sum       => sig_pc_inc,
                carry_out => sig_pc_carry_out );
 
-    branch_pc : adder_4b
-    port map ( src_a     => sig_curr_pc,
-               src_b     => sig_id_insn(3 downto 0),   -- last 4 bits of last instruction in pipeline
-               sum       => sig_branch_pc,
-               carry_out => sig_pc_branch_carry_out );
-
+    
+    sig_branch_pc <= sig_id_insn(3 downto 0);
+   
 
 
     -- next_pc
