@@ -88,7 +88,7 @@ begin
               
                 --attack
               var_insn_mem(5)  := X"800C";    -- set_signal 0,0,"1200"
-              var_insn_mem(6)  := X"2102";    -- bne $1,$0,2 (recv_done)
+              var_insn_mem(6)  := X"2101";    -- bne $1,$0,1 (while)
               var_insn_mem(7)  := X"0000";    -- nop
               
               -- error
