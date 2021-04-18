@@ -100,7 +100,8 @@ component control_unit is
            alu_ctr    : out std_logic_vector(1 downto 0);
            mem_write  : out std_logic;
            mem_to_reg : out std_logic;
-           branch     : out std_logic );
+           branch     : out std_logic;
+           status_reg_write_enable out std_logic );
 end component;
 
 component register_file is
@@ -393,7 +394,8 @@ begin
                alu_ctr    => sig_alu_ctr,
                mem_write  => sig_mem_write,
                mem_to_reg => sig_mem_to_reg,
-               branch     => sig_branch );
+               branch     => sig_branch,
+               status_reg_write_enable => sig_id_status_reg_write_enable );
 
     reg_file : register_file
     port map ( reset           => reset,
