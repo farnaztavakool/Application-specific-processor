@@ -25,6 +25,7 @@
     xor      0110    6
     parity   0111    7
     set_sig  1000    8
+    store    1001    9
     
     
         FORMATS:  |
