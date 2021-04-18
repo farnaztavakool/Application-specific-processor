@@ -285,6 +285,7 @@ signal sig_frwd_b               : std_logic_vector(15 downto 0);
 
 -- Hardcoded instruction addresses for send/recieve
 
+
 signal do_recv_addr              : std_logic_vector(4 downto 0);
 signal do_send_addr              : std_logic_vector(4 downto 0);
 signal pc_mux_select             : std_logic_vector(4 downto 0);
@@ -293,6 +294,7 @@ signal pc_mux_select             : std_logic_vector(4 downto 0);
 signal sig_next_pc_mux            :std_logic_vector(4 downto 0);
 signal mux_recv_next              :std_logic_vector(4 downto 0);
 signal mux_next_send              :std_logic_vector(4 downto 0);
+
 
 -- mux signals
 signal recv_busy                  :std_logic;
@@ -308,8 +310,10 @@ begin
 
 --    out_sig_if <= sig_id_insn;
 
+
     recv_busy <= recv and (not set_signal(3));
     send_busy <= send and (not set_signal(3));
+
 
     busy <= set_signal(3);
     attack <= set_signal(2);
@@ -338,13 +342,17 @@ begin
                sum       => sig_pc_inc,
                carry_out => sig_pc_carry_out );
 
+
     -- branch add is 3 bits need to concat a zero bit at the begining
     sig_branch_pc <= '0' & sig_id_insn(3 downto 0);
     
 
 
 
+
     -- next_pc
+
+
     next_pc_mux: mux_2to1_5b
     port map ( mux_select => sig_xor_branch_mux,
                data_a     => sig_pc_inc,
@@ -360,6 +368,7 @@ begin
                data_out   => mux_recv_next );
 
     -- send mux
+
     send_pc_mux: mux_2to1_5b
     port map ( mux_select => send_busy,
                data_a     => mux_recv_next,
