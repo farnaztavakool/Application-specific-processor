@@ -23,7 +23,7 @@ architecture behave of Single_cycle_core_TB_VHDL is
     signal attack     : std_logic := '0';
     signal error      : std_logic := '0';
     signal network_out : std_logic_vector(19 downto 0) := (others => '0'); -- data sent to network
-    signal cpu_out      : std_logic_vector(15 downto 0) := (others => '0'); -- data sent to processor
+    signal cpu_out     : std_logic_vector(15 downto 0) := (others => '0'); -- data sent to processor
     signal toggle_bit   : std_logic := '0';
     signal busy         : std_logic := '0';
     file file_vectors_network: text;
@@ -40,8 +40,8 @@ component single_cycle_core is
             clk               : in   std_logic;
             send              : in   std_logic;
             recv              : in   std_logic;
-            network_in        : in   std_logic_vector(19 downto 0); -- 4 tag + 16 bit
-            cpu_in            : in   std_logic_vector(16 downto 0); -- 16 bita+ parity
+            network_in       : in   std_logic_vector(19 downto 0); -- 4 tag + 16 bit
+            cpu_in           : in   std_logic_vector(16 downto 0); -- 16 bita+ parity
             attack            : out  std_logic;
             error             : out  std_logic;
             network_out       : out  std_logic_vector(19 downto 0);
@@ -119,7 +119,7 @@ begin
             if (not endfile(file_vectors_cpu)) then
                 readline(file_VECTORS_cpu, v_line_cpu);
                 read(v_LINE_cpu, cpu_data);
-                network_in <= cpu_data;
+                cpu_in <= cpu_data;
                 toggle_bit <= '0';
                 send <= '1';
                 recv <= '0';
