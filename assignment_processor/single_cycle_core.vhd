@@ -42,10 +42,21 @@ use IEEE.STD_LOGIC_UNSIGNED.ALL;
 
 
 entity single_cycle_core is
-    port ( reset  : in  std_logic;
-           clk    : in  std_logic; 
-           out_sig_if: out std_logic_vector(15 downto 0) );
+    port (
+           reset             : in   std_logic;
+           clk               : in   std_logic;
+           send              : in   std_logic;
+           recv              : in   std_logic;
+           network_in        : in   std_logic_vector(19 downto 0); -- 4 tag + 16 bit
+           cpu_in            : in   std_logic_vector(16 downto 0); -- 16 bita+ parity
+
+           busy              : out  std_logic;
+           attack            : out  std_logic;
+           error             : out  std_logic;
+           network_out       : out  std_logic_vector(19 downto 0);
+           cpu_out           : out  std_logic_vector(15 downto 0));
 end single_cycle_core;
+
 
 architecture structural of single_cycle_core is
 
@@ -226,15 +237,46 @@ signal sig_wb_alu_ctr_out       : std_logic_vector(15 downto 0);
 signal sig_wb_write_register    : std_logic_vector(3 downto 0);
 signal sig_wb_write_data        : std_logic_vector(15 downto 0);
 signal sig_wb_reg_write         : std_logic;
+
 -- forwarding 
 signal sig_frwd_ctr_a           : std_logic_vector(1 downto 0);
 signal sig_frwd_ctr_b           : std_logic_vector(1 downto 0);
 signal sig_frwd_a               : std_logic_vector(15 downto 0);
 signal sig_frwd_b               : std_logic_vector(15 downto 0);
 
+-- Hardcoded instruction addresses for send/recieve
+
+signal do_recv_addr              : std_logic_vector(3 downto 0);
+signal do_send_addr              : std_logic_vector(3 downto 0);
+signal pc_mux_select             : std_logic_vector(3 downto 0);
+
+-- mux results
+signal sig_next_pc_mux                :std_logic_vector(3 downto 0);
+signal mux_recv_next             :std_logic_vector(3 downto 0);
+signal mux_next_send             :std_logic_vector(3 downto 0);
+
+-- mux signals
+signal recv_busy                  :std_logic;
+signal send_busy                  :std_logic;
+
+
+-- busy|attack|error|valid
+signal set_signal                 :std_logic_vector(3 downto 0);
+
+
+
+
+
 begin
 
-    out_sig_if <= sig_id_insn;
+    -- setting mux signal for pc
+    recv_busy <= recv and (not set_signal(3));
+    
+    --setting mux signal for pc
+    send_busy <= send and (not set_signal(3));  
+    
+        
+    --out_sig_if <= sig_id_insn;
              
              
     -- IF: instruction fetch
@@ -252,17 +294,35 @@ begin
                sum       => sig_pc_inc,            
                carry_out => sig_pc_carry_out );
                
-    branch_pc : adder_4b 
-    port map ( src_a     => sig_curr_pc, 
-               src_b     => sig_id_insn(3 downto 0),   -- last 4 bits of last instruction in pipeline
-               sum       => sig_branch_pc,   
-               carry_out => sig_pc_branch_carry_out );
-    
-    next_pc_mux: mux_2to1_4b 
+   
+    -- bne works with address instead of offset now    
+    sig_branch_pc <= sig_id_insn(3 downto 0);
+   
+
+
+    -- next_pc
+    next_pc_mux: mux_2to1_4b
     port map ( mux_select => sig_xor_branch_mux,
                data_a     => sig_pc_inc,
                data_b     => sig_branch_pc,
+               data_out   => sig_next_pc_mux );
+
+
+    -- recv mux
+    recv_pc_mux: mux_2to1_4b
+    port map ( mux_select => recv_busy,
+               data_a     => sig_next_pc_mux,
+               data_b     => do_recv_addr,
+               data_out   => mux_recv_next );
+
+    -- send mux
+    send_pc_mux: mux_2to1_4b
+    port map ( mux_select => send_busy,
+               data_a     => mux_recv_next,
+               data_b     => do_send_addr,
                data_out   => sig_next_pc );
+
+
     
     insn_mem : instruction_memory 
     port map ( reset    => reset,
