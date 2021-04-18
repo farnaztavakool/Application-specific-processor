@@ -101,7 +101,7 @@ component control_unit is
            mem_write  : out std_logic;
            mem_to_reg : out std_logic;
            branch     : out std_logic;
-           status_reg_write_enable out std_logic );
+           status_reg_write_enable : out std_logic );
 end component;
 
 component register_file is
