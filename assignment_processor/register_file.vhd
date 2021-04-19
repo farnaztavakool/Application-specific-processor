@@ -1,20 +1,20 @@
 ---------------------------------------------------------------------------
 -- register_file.vhd - Implementation of A Dual-Port, 16 x 16-bit
 --                     Collection of Registers.
---
+-- 
 --
 -- Copyright (C) 2006 by Lih Wen Koh (lwkoh@cse.unsw.edu.au)
--- All Rights Reserved.
+-- All Rights Reserved. 
 --
--- The single-cycle processor core is provided AS IS, with no warranty of
--- any kind, express or implied. The user of the program accepts full
--- responsibility for the application of the program and the use of any
--- results. This work may be downloaded, compiled, executed, copied, and
--- modified solely for nonprofit, educational, noncommercial research, and
--- noncommercial scholarship purposes provided that this notice in its
--- entirety accompanies all copies. Copies of the modified software can be
--- delivered to persons who use it solely for nonprofit, educational,
--- noncommercial research, and noncommercial scholarship purposes provided
+-- The single-cycle processor core is provided AS IS, with no warranty of 
+-- any kind, express or implied. The user of the program accepts full 
+-- responsibility for the application of the program and the use of any 
+-- results. This work may be downloaded, compiled, executed, copied, and 
+-- modified solely for nonprofit, educational, noncommercial research, and 
+-- noncommercial scholarship purposes provided that this notice in its 
+-- entirety accompanies all copies. Copies of the modified software can be 
+-- delivered to persons who use it solely for nonprofit, educational, 
+-- noncommercial research, and noncommercial scholarship purposes provided 
 -- that this notice in its entirety accompanies all copies.
 --
 ---------------------------------------------------------------------------
@@ -31,14 +31,6 @@ entity register_file is
            write_enable    : in  std_logic;
            write_register  : in  std_logic_vector(3 downto 0);
            write_data      : in  std_logic_vector(15 downto 0);
-           write_enable_special : in std_logic; -- For reg 234
-           reg_2_write_data : in std_logic_vector(15 downto 0);
-           reg_3_write_data : in std_logic_vector(15 downto 0);
-           reg_4_write_data : in std_logic_vector(15 downto 0);
-
-
-
-
            read_data_a     : out std_logic_vector(15 downto 0);
            read_data_b     : out std_logic_vector(15 downto 0) );
 end register_file;
@@ -56,49 +48,40 @@ begin
                             read_register_b,
                             write_enable,
                             write_register,
-                            write_data,
-                            write_enable_special ) is
+                            write_data ) is
 
     variable var_regfile     : reg_file;
     variable var_read_addr_a : integer;
     variable var_read_addr_b : integer;
     variable var_write_addr  : integer;
-
+    
     begin
-
+    
         var_read_addr_a := conv_integer(read_register_a);
         var_read_addr_b := conv_integer(read_register_b);
         var_write_addr  := conv_integer(write_register);
-
+        
         if (reset = '1') then
             -- initial values of the registers - reset to zeroes
             var_regfile := (others => X"0000");
 
-        elsif clk = '1' then
-        	if write_enable = '1' and var_write_addr /= 2 and var_write_addr /= 3 and var_write_addr /= 4 then
-				-- register write on the rising clock edge
-				var_regfile(var_write_addr) := write_data;
-			end if;
-
-        	if write_enable_special = '1' then
-				-- Special case for regs 234
-				var_regfile(2) := reg_2_write_data;
-				var_regfile(3) := reg_3_write_data;
-				var_regfile(4) := reg_4_write_data;
-			end if;
+        elsif (clk = '1' and write_enable = '1') then
+            -- register write on the rising clock edge
+            var_regfile(var_write_addr) := write_data;
+ 
         elsif (clk = '0') then
             -- read on falling edge
             -- enforces value zero for register $0
             var_regfile(0) := X"0000";
-
+    
             -- continuous read of the registers at location read_register_a
             -- and read_register_b
-            read_data_a <= var_regfile(var_read_addr_a);
+            read_data_a <= var_regfile(var_read_addr_a); 
             read_data_b <= var_regfile(var_read_addr_b);
-
+    
             -- the following are probe signals (for simulation purpose)
             sig_regfile <= var_regfile;
         end if;
-
-    end process;
+        
+    end process; 
 end behavioral;
