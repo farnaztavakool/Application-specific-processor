@@ -78,11 +78,17 @@ constant OP_SETSIG : std_logic_vector(3 downto 0) := "1000";    -- TODO
 
 begin
 
-    reg_dst    <= '1' when (opcode = OP_ROL) else
+    reg_dst    <= '1' when (opcode = OP_ROL
+                            or opcode = OP_BF
+                            or opcode = OP_XOR
+                            or opcode = OP_PARITY) else
                   '0';
 
-    reg_write  <= '1' when (opcode = OP_ROL
-                            or opcode = OP_LOAD) else
+    reg_write  <= '1' when (opcode = OP_LOAD
+                            or opcode = OP_ROL
+                            or opcode = OP_BF
+                            or opcode = OP_XOR
+                            or opcode = OP_PARITY) else
                   '0';
 
     alu_src    <= '1' when (opcode = OP_LOAD
