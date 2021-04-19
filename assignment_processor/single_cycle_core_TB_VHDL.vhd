@@ -26,6 +26,7 @@ architecture behave of Single_cycle_core_TB_VHDL is
     signal cpu_out     : std_logic_vector(15 downto 0) := (others => '0'); -- data sent to processor
     signal toggle_bit   : std_logic := '0';
     signal busy         : std_logic := '0';
+    signal valid        : std_logic;
     --file file_vectors_network: text;
     --file file_vectors_cpu :text;
 
@@ -35,18 +36,20 @@ architecture behave of Single_cycle_core_TB_VHDL is
 -- if rising_edge && ! busy --> read file & check  ?
 -- if rising_edge && ! busy && check --> send file
 component single_cycle_core is
-      port (
-            reset             : in   std_logic;
-            clk               : in   std_logic;
-            send              : in   std_logic;
-            recv              : in   std_logic;
-            network_in       : in   std_logic_vector(19 downto 0); -- 4 tag + 16 bit
-            cpu_in           : in   std_logic_vector(16 downto 0); -- 16 bita+ parity
-            attack            : out  std_logic;
-            error             : out  std_logic;
-            network_out       : out  std_logic_vector(19 downto 0);
-            cpu_out           : out  std_logic_vector(15 downto 0);
-            busy              : out  std_logic );
+         port (
+           reset             : in   std_logic;
+           clk               : in   std_logic;
+           send              : in   std_logic;
+           recv              : in   std_logic;
+           network_in        : in   std_logic_vector(19 downto 0); -- 4 tag + 16 bit
+           cpu_in            : in   std_logic_vector(16 downto 0); -- 16 bita+ parity
+
+           busy              : out  std_logic;
+           attack            : out  std_logic;
+           error             : out  std_logic;
+           valid             : out std_logic;
+           network_out       : out  std_logic_vector(19 downto 0);
+           cpu_out           : out  std_logic_vector(15 downto 0));
 
 
 end component ;
@@ -62,11 +65,12 @@ UUT : single_cycle_core
     recv   => recv,
     network_in => network_in,
     cpu_in    => cpu_in,
+    busy        => busy,
     attack   => attack,
     error   => error,
+    valid  => valid,
     network_out => network_out,
-    cpu_out     => cpu_out,
-    busy        => busy
+    cpu_out     => cpu_out
 
     );
 
@@ -97,7 +101,7 @@ process(r_clock)
     variable network_data   :std_logic_vector(19 downto 0);
     file file_vectors_network :  text open read_mode is "C:\Users\farnaz\OneDrive\Desktop\ava_asst_code\assignment_processor\network.txt";  
     file file_vectors_cpu :  text open read_mode is "C:\Users\farnaz\OneDrive\Desktop\ava_asst_code\assignment_processor\cpu.txt";  
-
+    variable stall        :integer:=0;
 begin
 
     --file_open(file_VECTORS_network, "network",  read_mode);
@@ -105,8 +109,9 @@ begin
     --file file_vectors_network :  text open read_mode is "network";  
    -- file file_vectors_network     : text open read_mode is "network";
 
-    if rising_edge(r_clock) and busy = '0' and r_reset = '0' then
-        if toggle_bit = '0' then
+    if rising_edge(r_clock) and busy = '0' and r_reset = '0'  then
+       
+        if toggle_bit = '0' and stall = 0 then
             if (not endfile(file_vectors_network)) then
                 readline(file_VECTORS_network, v_line_network);
                 read(v_LINE_network, network_data);
@@ -119,7 +124,7 @@ begin
                 recv       <= '0';
                 --send <= '0';
             end if;
-        else
+        elsif stall = 0 then
             if (not endfile(file_vectors_cpu)) then
                 readline(file_VECTORS_cpu, v_line_cpu);
                 read(v_LINE_cpu, cpu_data);
@@ -132,6 +137,10 @@ begin
                 send <= '0';
                 --send <= '0';
             end if;
+        end if;
+         stall:= stall+1;
+        if (stall = 3) then 
+            stall := 0;
         end if;
     end if;
 end process;

@@ -53,6 +53,7 @@ entity single_cycle_core is
            busy              : out  std_logic;
            attack            : out  std_logic;
            error             : out  std_logic;
+           valid             : out std_logic;
            network_out       : out  std_logic_vector(19 downto 0);
            cpu_out           : out  std_logic_vector(15 downto 0));
 end single_cycle_core;
@@ -318,7 +319,7 @@ begin
     busy <= set_signal(3);
     attack <= set_signal(2);
     error <= set_signal(1);
-    attack <= set_signal(0);
+    valid <= set_signal(0);
 
 
     -- IF: instruction fetch
