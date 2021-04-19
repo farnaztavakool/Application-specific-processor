@@ -95,8 +95,8 @@ process(r_clock)
     variable  v_line_cpu    :line;
     variable cpu_data       :std_logic_vector(16 downto 0);
     variable network_data   :std_logic_vector(19 downto 0);
-    file file_vectors_network :  text open read_mode is "C:\Users\farnaz\OneDrive\Desktop\ava_asst_code\assignment_processor\network.txt";  
-    file file_vectors_cpu :  text open read_mode is "C:\Users\farnaz\OneDrive\Desktop\ava_asst_code\assignment_processor\cpu.txt";  
+    file file_vectors_network :  text open read_mode is "network.txt";  
+    file file_vectors_cpu :  text open read_mode is "cpu.txt";  
 
 begin
 
