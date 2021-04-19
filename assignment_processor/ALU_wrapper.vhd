@@ -1,21 +1,21 @@
 ----------------------------------------------------------------------------------
--- Company: 
--- Engineer: 
--- 
+-- Company:
+-- Engineer:
+--
 -- Create Date: 16.04.2021 17:40:55
--- Design Name: 
+-- Design Name:
 -- Module Name: ALU_wrapper - Behavioral
--- Project Name: 
--- Target Devices: 
--- Tool Versions: 
--- Description: 
--- 
--- Dependencies: 
--- 
+-- Project Name:
+-- Target Devices:
+-- Tool Versions:
+-- Description:
+--
+-- Dependencies:
+--
 -- Revision:
 -- Revision 0.01 - File Created
 -- Additional Comments:
--- 
+--
 ----------------------------------------------------------------------------------
 
 
@@ -71,7 +71,7 @@ end component;
             rt_in     : in  std_logic_vector(15 downto 0);
             rd_out    : out std_logic_vector(15 downto 0));
     end component;
-    
+
     signal rs_in :std_logic_vector(15 downto 0);
     signal rt_in :std_logic_vector(15 downto 0);
 
@@ -79,19 +79,21 @@ end component;
     signal rol_res    : std_logic_vector(15 downto 0);
     signal bf_res     : std_logic_vector(15 downto 0);
     signal xor_res    : std_logic_vector(15 downto 0);
-    signal parity_res : std_logic_vector(15 downto 0); 
-    
-    signal empty : std_logic_vector(13 downto 0) := (others => '0'); 
+    signal parity_res : std_logic_vector(15 downto 0);
+
+    signal empty : std_logic_vector(13 downto 0) := (others => '0');
 
 begin
-               
+
     --bf_res      <= empty & "00";
     --rol_res     <= empty & "01";
     --xor_res     <= empty & "10";
     --parity_res  <= empty & "11";
-    
-               
-    mux_alu_ctr : mux_4to1_16b 
+
+    rs_in <= src_a;
+    rt_in <= src_b;
+
+    mux_alu_ctr : mux_4to1_16b
     port map ( mux_select => ctr,
                data_a     => bf_res,        -- bf 00
                data_b     => rol_res,       -- rol  01
@@ -104,20 +106,20 @@ begin
         (   rs_in     => rs_in,
             rt_in     => rt_in,
             rd_out    => bf_res);
-  
+
       parity : alu_parity port map
         (   rs_in     => rs_in,
             rt_in     => rt_in,
             rd_out    => parity_res);
-  
+
       alu_rol1: alu_rol port map
         (   rs_in     => rs_in,
             rt_in     => rt_in,
             rd_out    => rol_res);
-  
+
       alu_xor1: alu_xor port map
         (   rs_in     => rs_in,
             rt_in     => rt_in,
             rd_out    => xor_res);
-      
+
 end Behavioral;
