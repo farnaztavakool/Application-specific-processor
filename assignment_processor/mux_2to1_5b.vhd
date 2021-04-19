@@ -41,7 +41,7 @@ end component;
 begin
 
     -- this for-generate-loop replicates four single-bit 2-to-1 mux
-    muxes : for i in 3 downto 0 generate
+    muxes : for i in 4 downto 0 generate
         bit_mux : mux_2to1_1b 
         port map ( mux_select => mux_select,
                    data_a     => data_a(i),
