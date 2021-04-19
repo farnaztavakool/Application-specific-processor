@@ -26,8 +26,8 @@ architecture behave of Single_cycle_core_TB_VHDL is
     signal cpu_out     : std_logic_vector(15 downto 0) := (others => '0'); -- data sent to processor
     signal toggle_bit   : std_logic := '0';
     signal busy         : std_logic := '0';
-    file file_vectors_network: text;
-    file file_vectors_cpu :text;
+    --file file_vectors_network: text;
+    --file file_vectors_cpu :text;
 
 
 
@@ -95,13 +95,17 @@ process(r_clock)
     variable  v_line_cpu    :line;
     variable cpu_data       :std_logic_vector(16 downto 0);
     variable network_data   :std_logic_vector(19 downto 0);
+    file file_vectors_network :  text open read_mode is "C:\Users\farnaz\OneDrive\Desktop\ava_asst_code\assignment_processor\network.txt";  
+    file file_vectors_cpu :  text open read_mode is "C:\Users\farnaz\OneDrive\Desktop\ava_asst_code\assignment_processor\cpu.txt";  
 
 begin
 
-    file_open(file_VECTORS_network, "network_input.txt",  read_mode);
-    file_open(file_VECTORS_cpu, "network_input.txt",  read_mode);
+    --file_open(file_VECTORS_network, "network",  read_mode);
+    --file_open(file_VECTORS_cpu, "cpu",  read_mode);
+    --file file_vectors_network :  text open read_mode is "network";  
+   -- file file_vectors_network     : text open read_mode is "network";
 
-    if rising_edge(r_clock) and busy = '0' then
+    if rising_edge(r_clock) and busy = '0' and r_reset = '0' then
         if toggle_bit = '0' then
             if (not endfile(file_vectors_network)) then
                 readline(file_VECTORS_network, v_line_network);
