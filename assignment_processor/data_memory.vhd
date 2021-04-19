@@ -48,7 +48,7 @@ begin
 
 		variable var_data_mem : mem_array;
 		variable var_addr     : integer;
-			
+
     begin
         var_addr := conv_integer(addr_in);
 
@@ -70,9 +70,9 @@ begin
             var_data_mem(13) := X"0000";
             var_data_mem(14) := X"0000";
             var_data_mem(15) := X"0000";
-            
-			
-           
+
+
+
 
 
         elsif (falling_edge(clk) and write_enable = '1') then

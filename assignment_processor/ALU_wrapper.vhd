@@ -48,6 +48,33 @@ component mux_4to1_16b is
         data_d     : in  std_logic_vector(15 downto 0);
         data_out   : out std_logic_vector(15 downto 0));
 end component;
+    component alu_flip is
+        port ( rs_in     : in  std_logic_vector(15 downto 0);
+            rt_in     : in  std_logic_vector(15 downto 0);
+            rd_out    : out std_logic_vector(15 downto 0));
+    end component;
+
+    component alu_parity is
+        port ( rs_in     : in  std_logic_vector(15 downto 0);
+            rt_in     : in  std_logic_vector(15 downto 0);
+            rd_out    : out std_logic_vector(15 downto 0));
+    end component;
+
+    component alu_rol is
+        port ( rs_in     : in  std_logic_vector(15 downto 0);
+            rt_in     : in  std_logic_vector(15 downto 0);
+            rd_out    : out std_logic_vector(15 downto 0));
+    end component;
+
+    component alu_xor is
+        port ( rs_in     : in  std_logic_vector(15 downto 0);
+            rt_in     : in  std_logic_vector(15 downto 0);
+            rd_out    : out std_logic_vector(15 downto 0));
+    end component;
+    
+    signal rs_in :std_logic_vector(15 downto 0);
+    signal rt_in :std_logic_vector(15 downto 0);
+
 
     signal rol_res    : std_logic_vector(15 downto 0);
     signal bf_res     : std_logic_vector(15 downto 0);
@@ -58,10 +85,10 @@ end component;
 
 begin
                
-    bf_res      <= empty & "00";
-    rol_res     <= empty & "01";
-    xor_res     <= empty & "10";
-    parity_res  <= empty & "11";
+    --bf_res      <= empty & "00";
+    --rol_res     <= empty & "01";
+    --xor_res     <= empty & "10";
+    --parity_res  <= empty & "11";
     
                
     mux_alu_ctr : mux_4to1_16b 
@@ -69,7 +96,28 @@ begin
                data_a     => bf_res,        -- bf 00
                data_b     => rol_res,       -- rol  01
                data_c     => xor_res,       -- xor 10
-               data_d     => parity_res,    -- parity 10
+               data_d     => parity_res,    -- parity 11
                data_out   => alu_out );
 
+
+    flip : alu_flip port map
+        (   rs_in     => rs_in,
+            rt_in     => rt_in,
+            rd_out    => bf_res);
+  
+      parity : alu_parity port map
+        (   rs_in     => rs_in,
+            rt_in     => rt_in,
+            rd_out    => parity_res);
+  
+      alu_rol1: alu_rol port map
+        (   rs_in     => rs_in,
+            rt_in     => rt_in,
+            rd_out    => rol_res);
+  
+      alu_xor1: alu_xor port map
+        (   rs_in     => rs_in,
+            rt_in     => rt_in,
+            rd_out    => xor_res);
+      
 end Behavioral;
