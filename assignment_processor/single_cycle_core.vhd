@@ -209,7 +209,7 @@ end component;
 -- this is particularly needed when the signal is propogated through to other stages
 signal sig_next_pc              : std_logic_vector(5 downto 0);
 signal sig_curr_pc              : std_logic_vector(5 downto 0);
-signal sig_one_4b               : std_logic_vector(5 downto 0);
+signal sig_one_6b               : std_logic_vector(5 downto 0);
 signal sig_pc_inc               : std_logic_vector(5 downto 0);
 signal sig_branch_pc            : std_logic_vector(5 downto 0);
 signal sig_pc_carry_out         : std_logic;
@@ -318,7 +318,7 @@ begin
 
 
     -- IF: instruction fetch
-    sig_one_4b <= "000001";
+    sig_one_6b <= "000001";
     
     -- do_recv address is 11
     do_recv_addr <= "001011";
@@ -334,7 +334,7 @@ begin
 
     next_pc : adder_6b
     port map ( src_a     => sig_curr_pc,
-               src_b     => sig_one_4b,
+               src_b     => sig_one_6b,
                sum       => sig_pc_inc,
                carry_out => sig_pc_carry_out );
 

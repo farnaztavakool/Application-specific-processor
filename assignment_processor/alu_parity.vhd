@@ -17,7 +17,7 @@ architecture behavioural of alu_parity is
 
 begin
     --could be changed with using 15 XORs
-    tmp<= rs_in(15 downto 12) xor rs_in(11 downto 8) xor rs_in(7 downto 4) xor rs_in(3 downto 0);
-    rd_out(0)<=tmp(3)xor tmp(2) xor tmp(1) xor tmp(0);
-    rd_out(15 downto 1)<= (others=>'0');
+    tmp <= rs_in(15 downto 12) xor rs_in(11 downto 8) xor rs_in(7 downto 4) xor rs_in(3 downto 0);
+    rd_out(0) <= tmp(3)xor tmp(2) xor tmp(1) xor tmp(0);
+    rd_out(15 downto 1) <= (others=>'0');
 end behavioural;

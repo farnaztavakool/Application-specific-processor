@@ -117,7 +117,7 @@ begin
               var_insn_mem(29)  := X"7235";    -- parity $5,$2,$3
               var_insn_mem(30)  := X"0000";    -- nop
               var_insn_mem(31)  := X"0000";    -- nop
-              var_insn_mem(32)  := X"252A";    -- bne $1,$0,10 (error)
+              var_insn_mem(32)  := X"252A";    -- bne $5,$2,10 (error)
               var_insn_mem(33)  := X"0000";    -- nop
               var_insn_mem(34)  := X"4215";    -- bit_flip $5,$2,$1
               var_insn_mem(35)  := X"0000";    -- nop
