@@ -124,7 +124,7 @@ component register_file is
            reg_2_write_data : in std_logic_vector(15 downto 0);
            reg_3_write_data : in std_logic_vector(15 downto 0);
            reg_4_write_data : in std_logic_vector(15 downto 0);
-            
+
            reg_2_read_data : out std_logic_vector(15 downto 0);
            read_data_a     : out std_logic_vector(15 downto 0);
            read_data_b     : out std_logic_vector(15 downto 0) );
@@ -155,16 +155,16 @@ component regne is
 			Q 		: out 	std_logic_vector(N-1 downto 0));
 end component;
 
-component forwarding_unit is
-    Port (mem_reg_write : in std_logic;
-          wb_reg_write  : in std_logic;
-          mem_rd        : in std_logic_vector(3 downto 0);
-          wb_rd         : in std_logic_vector(3 downto 0);
-          ex_rs         : in std_logic_vector(3 downto 0);
-          ex_rt         : in std_logic_vector(3 downto 0);
-          frwd_ctr_a    : out std_logic_vector(1 downto 0);
-          frwd_ctr_b    : out std_logic_vector(1 downto 0));
-end component;
+--component forwarding_unit is
+--    Port (mem_reg_write : in std_logic;
+--          wb_reg_write  : in std_logic;
+--          mem_rd        : in std_logic_vector(3 downto 0);
+--          wb_rd         : in std_logic_vector(3 downto 0);
+--          ex_rs         : in std_logic_vector(3 downto 0);
+--          ex_rt         : in std_logic_vector(3 downto 0);
+--          frwd_ctr_a    : out std_logic_vector(1 downto 0);
+--          frwd_ctr_b    : out std_logic_vector(1 downto 0));
+--end component;
 
 component mux_4to1_16b is
  port ( mux_select : in  std_logic_vector(1 downto 0);
@@ -315,8 +315,8 @@ signal sig_cpu_out               : std_logic_vector(15 downto 0) := X"0000";
 begin
 
     network_out <=  mem_net_out(19 downto 0);
-                   
-    cpu_out     <= sig_cpu_out  when (valid = '1') else 
+
+    cpu_out     <= sig_cpu_out when (valid = '1') else
                    (others => '0');
 
     recv_busy <= recv and (not set_signal(3));
@@ -331,10 +331,10 @@ begin
 
     -- IF: instruction fetch
     sig_one_4b <= "000001";
-    
+
     -- do_recv address is 11
     do_recv_addr <= "001101";
-    
+
     -- do_send address is 27
     do_send_addr <= "011101";
 
@@ -353,7 +353,7 @@ begin
 
     -- branch add is 3 bits need to concat two zero bits at the begining
     sig_branch_pc <= "00" & sig_id_insn(3 downto 0);
-    
+
 
     -- next_pc
     next_pc_mux: mux_2to1_6b
@@ -431,7 +431,7 @@ begin
                reg_2_write_data => sig_id_special_reg_data(15 downto 0),
                reg_3_write_data => sig_id_special_reg_data(31 downto 16),
                reg_4_write_data => sig_id_special_reg_data(47 downto 32),
-               
+
                reg_2_read_data => sig_cpu_out,
                read_data_a     => sig_read_data_a,
                read_data_b     => sig_read_data_b );
@@ -460,7 +460,7 @@ begin
         reg_3 => sig_id_special_reg_data(31 downto 16),
         reg_4 => sig_id_special_reg_data(47 downto 32)
     );
-    
+
     -- EX: execute instruction
 
     -- signals through stages are set up using an N bit generic
@@ -541,31 +541,31 @@ begin
 
 
     -- forwarding logic
-    frwd_unit : forwarding_unit
-    Port map (mem_reg_write => sig_mem_reg_write,
-              wb_reg_write  => sig_wb_reg_write,
-              mem_rd        => sig_mem_write_register,
-              wb_rd         => sig_mem_write_register,
-              ex_rs         => sig_ex_reg_2,
-              ex_rt         => sig_ex_reg_1,
-              frwd_ctr_a    => sig_frwd_ctr_a,
-              frwd_ctr_b    => sig_frwd_ctr_b);
+    -- frwd_unit : forwarding_unit
+    -- Port map (mem_reg_write => sig_mem_reg_write,
+    --           wb_reg_write  => sig_wb_reg_write,
+    --           mem_rd        => sig_mem_write_register,
+    --           wb_rd         => sig_mem_write_register,
+    --           ex_rs         => sig_ex_reg_2,
+    --           ex_rt         => sig_ex_reg_1,
+    --           frwd_ctr_a    => sig_frwd_ctr_a,
+    --           frwd_ctr_b    => sig_frwd_ctr_b);
 
-    mux_alu_src_a : mux_4to1_16b
-     port map ( mux_select => sig_frwd_ctr_a,
-                data_a     => sig_ex_read_data_a,   -- no frwd  00
-                data_b     => sig_ex_read_data_a,   -- no frwd  01
-                data_c     => sig_mem_alu_ctr_out,  -- mem frwd 10
-                data_d     => sig_wb_write_data,    -- wb fwrd  11
-                data_out   => sig_frwd_a);
+    -- mux_alu_src_a : mux_4to1_16b
+    --  port map ( mux_select => sig_frwd_ctr_a,
+    --             data_a     => sig_ex_read_data_a,   -- no frwd  00
+    --             data_b     => sig_ex_read_data_a,   -- no frwd  01
+    --             data_c     => sig_mem_alu_ctr_out,  -- mem frwd 10
+    --             data_d     => sig_wb_write_data,    -- wb fwrd  11
+    --             data_out   => sig_frwd_a);
 
-    mux_alu_src_b : mux_4to1_16b
-     port map ( mux_select => sig_frwd_ctr_b,
-                data_a     => sig_alu_src_b,        -- no frwd  00
-                data_b     => sig_alu_src_b,        -- no frwd  01
-                data_c     => sig_mem_alu_ctr_out,  -- mem frwd 10
-                data_d     => sig_wb_write_data,    -- wb fwrd  11
-                data_out   => sig_frwd_b);
+    -- mux_alu_src_b : mux_4to1_16b
+    --  port map ( mux_select => sig_frwd_ctr_b,
+    --             data_a     => sig_alu_src_b,        -- no frwd  00
+    --             data_b     => sig_alu_src_b,        -- no frwd  01
+    --             data_c     => sig_mem_alu_ctr_out,  -- mem frwd 10
+    --             data_d     => sig_wb_write_data,    -- wb fwrd  11
+    --             data_out   => sig_frwd_b);
 
 
     -- ALU not using forwarding logic
