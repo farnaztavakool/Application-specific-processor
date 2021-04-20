@@ -70,7 +70,8 @@ begin
 --            set_sig  1000    8
 --            store    1001    9
 
- 
+
+                -- no nop after set_sig TODO
 --              -- main:
 --              var_insn_mem(0)   := X"1010";    -- load $1,$0,0
 
@@ -136,7 +137,6 @@ begin
                -- main:
               var_insn_mem(0)   := X"1010";    -- load $1,$0,0
              
-
 
               -- while
               var_insn_mem(1)   := X"8000";    -- set_signal 0,0,"0000"
