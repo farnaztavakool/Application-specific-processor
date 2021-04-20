@@ -82,7 +82,7 @@ begin
 
         -- continuous read of the memory location given by var_addr
         data_out <= var_data_mem(var_addr);
-        data_net <= var_data_mem(2) & var_data_mem(1);
+        data_net <= var_data_mem(1) & var_data_mem(2);
         -- the following are probe signals (for simulation purpose)
         sig_data_mem <= var_data_mem;
 
