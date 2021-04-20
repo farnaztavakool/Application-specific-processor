@@ -143,7 +143,7 @@ component data_memory is
            write_enable : in  std_logic;
            write_data   : in  std_logic_vector(15 downto 0);
            addr_in      : in  std_logic_vector(3 downto 0);
-           data_net     : out std_logic_vector(31 downto 0);
+           data_net     : out std_logic_vector(19 downto 0);
            data_out     : out std_logic_vector(15 downto 0) );
 end component;
 
@@ -306,7 +306,7 @@ signal send_busy                 : std_logic;
 signal set_signal                : std_logic_vector(3 downto 0);
 
 -- net_out
-signal mem_net_out               : std_logic_vector(31 downto 0):= X"00000000";
+signal mem_net_out               : std_logic_vector(19 downto 0) := (others => '0');
 
 -- cpu out
 signal sig_cpu_out               : std_logic_vector(15 downto 0) := X"0000";

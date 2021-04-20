@@ -29,7 +29,7 @@ entity data_memory is
            write_enable : in  std_logic;
            write_data   : in  std_logic_vector(15 downto 0);
            addr_in      : in  std_logic_vector(3 downto 0);
-           data_net     : out std_logic_vector(31 downto 0);
+           data_net     : out std_logic_vector(19 downto 0);
            data_out     : out std_logic_vector(15 downto 0) );
 end data_memory;
 
@@ -55,7 +55,7 @@ begin
         if (reset = '1') then
             -- initial values of the data memory : reset to zero
             var_data_mem(0)  := X"ABCD"; -- secret key
-            var_data_mem(1)  := X"1234";
+            var_data_mem(1)  := X"0000";
             var_data_mem(2)  := X"0000";
             var_data_mem(3)  := X"0000";
             var_data_mem(4)  := X"0000";
@@ -82,7 +82,7 @@ begin
 
         -- continuous read of the memory location given by var_addr
         data_out <= var_data_mem(var_addr);
-        data_net <= var_data_mem(1) & var_data_mem(2);
+        data_net <= var_data_mem(1) & var_data_mem(2)(3 downto 0);
         -- the following are probe signals (for simulation purpose)
         sig_data_mem <= var_data_mem;
 

@@ -10,18 +10,19 @@
       </db_ref>
    </db_ref_list>
    <zoom_setting>
-      <ZoomStartTime time="0fs"></ZoomStartTime>
-      <ZoomEndTime time="219401fs"></ZoomEndTime>
-      <Cursor1Time time="106000fs"></Cursor1Time>
+      <ZoomStartTime time="172720fs"></ZoomStartTime>
+      <ZoomEndTime time="216871fs"></ZoomEndTime>
+      <Cursor1Time time="1000000fs"></Cursor1Time>
    </zoom_setting>
    <column_width_setting>
-      <NameColumnWidth column_width="132"></NameColumnWidth>
+      <NameColumnWidth column_width="128"></NameColumnWidth>
       <ValueColumnWidth column_width="58"></ValueColumnWidth>
    </column_width_setting>
    <WVObjectSize size="43" />
    <wave_markers>
       <marker time="12000" label="" />
       <marker time="25000" label="" />
+      <marker time="62000" label="" />
    </wave_markers>
    <wvobject fp_name="/Single_cycle_core_TB_VHDL/r_reset" type="logic">
       <obj_property name="ElementShortName">r_reset</obj_property>
