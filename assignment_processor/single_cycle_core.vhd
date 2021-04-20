@@ -321,10 +321,10 @@ begin
     sig_one_4b <= "000001";
     
     -- do_recv address is 11
-    do_recv_addr <= "001011";
+    do_recv_addr <= "001101";
     
     -- do_send address is 27
-    do_send_addr <= "011011";
+    do_send_addr <= "011101";
 
     pc : program_counter
     port map ( reset    => reset,

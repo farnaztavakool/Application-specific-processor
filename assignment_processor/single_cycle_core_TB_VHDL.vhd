@@ -109,9 +109,9 @@ begin
     --file file_vectors_network :  text open read_mode is "network";  
    -- file file_vectors_network     : text open read_mode is "network";
     if falling_edge(r_clock) and busy = '0' then
-        if (send = '1') then 
+        if (send = '1' and stall =  0) then 
             send <= '0';
-        elsif (recv = '1') then
+        elsif (recv = '1' and stall = 0) then
             recv <= '0';
         
         end if;
