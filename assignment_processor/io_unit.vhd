@@ -67,9 +67,9 @@ begin
 		network_in(19 downto 4)   when net_data_avail = '1' else
 		cpu_in(16 downto 1)       when cpu_data_avail = '1' else
 		(others => '0');
-
+    
 	reg_3 <=
-		"000000000000000" & cpu_in(1) when cpu_data_avail = '1' else
+		"000000000000000" & cpu_in(0) when cpu_data_avail = '1' else
 		(others => '0');
 
 	reg_4 <=

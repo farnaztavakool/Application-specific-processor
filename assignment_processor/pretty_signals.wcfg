@@ -10,15 +10,15 @@
       </db_ref>
    </db_ref_list>
    <zoom_setting>
-      <ZoomStartTime time="7500fs"></ZoomStartTime>
-      <ZoomEndTime time="61551fs"></ZoomEndTime>
-      <Cursor1Time time="15000fs"></Cursor1Time>
+      <ZoomStartTime time="0fs"></ZoomStartTime>
+      <ZoomEndTime time="219401fs"></ZoomEndTime>
+      <Cursor1Time time="106000fs"></Cursor1Time>
    </zoom_setting>
    <column_width_setting>
-      <NameColumnWidth column_width="148"></NameColumnWidth>
+      <NameColumnWidth column_width="132"></NameColumnWidth>
       <ValueColumnWidth column_width="58"></ValueColumnWidth>
    </column_width_setting>
-   <WVObjectSize size="40" />
+   <WVObjectSize size="43" />
    <wave_markers>
       <marker time="12000" label="" />
       <marker time="25000" label="" />
@@ -51,10 +51,12 @@
    <wvobject fp_name="/Single_cycle_core_TB_VHDL/network_out" type="array">
       <obj_property name="ElementShortName">network_out[19:0]</obj_property>
       <obj_property name="ObjectShortName">network_out[19:0]</obj_property>
+      <obj_property name="Radix">HEXRADIX</obj_property>
    </wvobject>
    <wvobject fp_name="/Single_cycle_core_TB_VHDL/cpu_in" type="array">
       <obj_property name="ElementShortName">cpu_in[16:0]</obj_property>
       <obj_property name="ObjectShortName">cpu_in[16:0]</obj_property>
+      <obj_property name="Radix">HEXRADIX</obj_property>
    </wvobject>
    <wvobject fp_name="/Single_cycle_core_TB_VHDL/cpu_out" type="array">
       <obj_property name="ElementShortName">cpu_out[15:0]</obj_property>
@@ -255,8 +257,20 @@
       <obj_property name="CustomSignalColor">#FFFFFF</obj_property>
       <obj_property name="UseCustomSignalColor">true</obj_property>
    </wvobject>
-   <wvobject fp_name="/Single_cycle_core_TB_VHDL/UUT/sig_id_special_reg_data" type="array">
-      <obj_property name="ElementShortName">sig_id_special_reg_data[47:0]</obj_property>
-      <obj_property name="ObjectShortName">sig_id_special_reg_data[47:0]</obj_property>
+   <wvobject fp_name="/Single_cycle_core_TB_VHDL/UUT/mem_net_out" type="array">
+      <obj_property name="ElementShortName">mem_net_out[31:0]</obj_property>
+      <obj_property name="ObjectShortName">mem_net_out[31:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/Single_cycle_core_TB_VHDL/UUT/sig_mem_mem_write" type="logic">
+      <obj_property name="ElementShortName">sig_mem_mem_write</obj_property>
+      <obj_property name="ObjectShortName">sig_mem_mem_write</obj_property>
+   </wvobject>
+   <wvobject fp_name="/Single_cycle_core_TB_VHDL/UUT/sig_mem_read_data_b" type="array">
+      <obj_property name="ElementShortName">sig_mem_read_data_b[15:0]</obj_property>
+      <obj_property name="ObjectShortName">sig_mem_read_data_b[15:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/Single_cycle_core_TB_VHDL/UUT/data_mem/sig_data_mem" type="array">
+      <obj_property name="ElementShortName">sig_data_mem[0:15][15:0]</obj_property>
+      <obj_property name="ObjectShortName">sig_data_mem[0:15][15:0]</obj_property>
    </wvobject>
 </wave_config>

@@ -33,7 +33,7 @@ end instruction_memory;
 
 architecture behavioral of instruction_memory is
 
-type mem_array is array(0 to 46) of std_logic_vector(15 downto 0);
+type mem_array is array(0 to 48) of std_logic_vector(15 downto 0);
 signal sig_insn_mem : mem_array;
 
 begin
@@ -183,7 +183,7 @@ begin
               var_insn_mem(31)  := X"7235";    -- parity $5,$2,$3
               var_insn_mem(32)  := X"0000";    -- nop
               var_insn_mem(33)  := X"0000";    -- nop
-              var_insn_mem(34)  := X"252A";    -- bne $5,$2,10 (error)
+              var_insn_mem(34)  := X"253A";    -- bne $5,$3,10 (error)
               var_insn_mem(35)  := X"0000";    -- nop
 
               var_insn_mem(36)  := X"4215";    -- bit_flip $5,$2,$1
@@ -195,8 +195,8 @@ begin
               var_insn_mem(42)  := X"6607";    -- xor $7,$6,$0
               var_insn_mem(43)  := X"0000";    -- nop
               var_insn_mem(44)  := X"0000";    -- nop               
-              var_insn_mem(45)  := X"9021";    -- store $2,$0,1
-              var_insn_mem(46)  := X"9072";    -- store $7,$0,1
+              var_insn_mem(45)  := X"3021";    -- store $2,$0,1
+              var_insn_mem(46)  := X"3072";    -- store $7,$0,1
               var_insn_mem(47)  := X"2522";    -- bne $1,$0,2 (while)   -- TODO use branch delay slot
               var_insn_mem(48)  := X"0000";    -- nop               
          
