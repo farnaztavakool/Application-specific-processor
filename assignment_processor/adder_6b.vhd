@@ -1,6 +1,6 @@
 ---------------------------------------------------------------------------
--- mux_2to1_6b.vhd - 6-bit 2-to-1 Multiplexer Implementation
---
+-- adder_6b.vhd - 6-bit Adder Implementation
+-- 
 --
 -- The single-cycle processor core is provided AS IS, with no warranty of 
 -- any kind, express or implied. The user of the program accepts full 
@@ -19,31 +19,21 @@ use IEEE.STD_LOGIC_1164.ALL;
 use IEEE.STD_LOGIC_ARITH.ALL;
 use IEEE.STD_LOGIC_UNSIGNED.ALL;
 
-entity mux_2to1_5b is
-    port ( mux_select : in  std_logic;
-           data_a     : in  std_logic_vector(4 downto 0);
-           data_b     : in  std_logic_vector(4 downto 0);
-           data_out   : out std_logic_vector(4 downto 0) );
-end mux_2to1_5b;
+entity adder_6b is
+    port ( src_a     : in  std_logic_vector(5 downto 0);
+           src_b     : in  std_logic_vector(5 downto 0);
+           sum       : out std_logic_vector(5 downto 0);
+           carry_out : out std_logic );
+end adder_6b;
 
-architecture structural of mux_2to1_5b is
+architecture behavioural of adder_6b is
 
-component mux_2to1_1b is
-    port ( mux_select : in  std_logic;
-           data_a     : in  std_logic;
-           data_b     : in  std_logic;
-           data_out   : out std_logic );
-end component;
+signal sig_result : std_logic_vector(6 downto 0);
 
 begin
 
-    -- this for-generate-loop replicates four single-bit 2-to-1 mux
-    muxes : for i in 4 downto 0 generate
-        bit_mux : mux_2to1_1b 
-        port map ( mux_select => mux_select,
-                   data_a     => data_a(i),
-                   data_b     => data_b(i),
-                   data_out   => data_out(i) );
-    end generate muxes;
+    sig_result <= ('0' & src_a) + ('0' & src_b);
+    sum        <= sig_result(5 downto 0);
+    carry_out  <= sig_result(6);
     
-end structural;
+end behavioural;

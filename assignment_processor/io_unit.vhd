@@ -1,6 +1,3 @@
--- Controls when to load data input into special registers, and output control signals
--- Dongzhu Huang
--- April 2021
 
 library ieee;
 use ieee.std_logic_1164.all;

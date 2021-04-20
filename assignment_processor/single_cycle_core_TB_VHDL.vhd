@@ -94,7 +94,7 @@ begin
 
 end process;
 
-process(r_clock)
+process(r_clock, busy)
     variable v_line_network : line;
     variable  v_line_cpu    :line;
     variable cpu_data       :std_logic_vector(16 downto 0);
@@ -108,7 +108,14 @@ begin
     --file_open(file_VECTORS_cpu, "cpu",  read_mode);
     --file file_vectors_network :  text open read_mode is "network";  
    -- file file_vectors_network     : text open read_mode is "network";
-
+    if falling_edge(r_clock) and busy = '0' then
+        if (send = '1' and stall =  0) then 
+            send <= '0';
+        elsif (recv = '1' and stall = 0) then
+            recv <= '0';
+        
+        end if;
+    end if ;   
     if rising_edge(r_clock) and busy = '0' and r_reset = '0'  then
        
         if toggle_bit = '0' and stall = 0 then
@@ -143,6 +150,7 @@ begin
             stall := 0;
         end if;
     end if;
+   
 end process;
 
 end behave;
