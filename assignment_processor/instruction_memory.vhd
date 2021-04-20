@@ -83,7 +83,7 @@ begin
               var_insn_mem(4)   := X"0000";    -- nop
               
                 --attack
-              var_insn_mem(5)   := X"800C";    -- set_signal 0,0,"1200"
+              var_insn_mem(5)   := X"800C";    -- set_signal 0,0,"1100"
               var_insn_mem(6)   := X"2101";    -- bne $1,$0,1 (while)
               var_insn_mem(7)   := X"0000";    -- nop
               
@@ -104,7 +104,7 @@ begin
               var_insn_mem(19)  := X"6607";    -- xor $7,$6,$0
               var_insn_mem(20)  := X"0000";    -- nop
               var_insn_mem(21)  := X"0000";    -- nop 
-              var_insn_mem(22)  := X"2745";    -- bne $7,$4,attack           
+              var_insn_mem(22)  := X"2747";    -- bne $7,$4,attack           
               var_insn_mem(23)  := X"0000";    -- nop
               var_insn_mem(24)  := X"8009";    -- set_signal $0,$0,"1001"
               var_insn_mem(25)  := X"2102";    -- bne $1,$0,2 (recv_done)

@@ -142,6 +142,7 @@ component data_memory is
            write_enable : in  std_logic;
            write_data   : in  std_logic_vector(15 downto 0);
            addr_in      : in  std_logic_vector(3 downto 0);
+           data_net     : out std_logic_vector(31 downto 0);
            data_out     : out std_logic_vector(15 downto 0) );
 end component;
 
@@ -303,9 +304,13 @@ signal send_busy                  :std_logic;
 -- busy|attack|error|valid
 signal set_signal                 :std_logic_vector(3 downto 0);
 
+-- net_out
+signal mem_net_out                :std_logic_vector(32 downto 0):= X"00000000";
 
 
 begin
+
+    network_out <= mem_net_out(19 downto 0);
 
     recv_busy <= recv and (not set_signal(3));
     send_busy <= send and (not set_signal(3));
@@ -612,6 +617,7 @@ begin
                write_data   => sig_mem_read_data_b,
                --addr_in      => sig_mem_alu_ctr_out(3 downto 0),
                addr_in      => sig_mem_addr(3 downto 0),
+               data_net     => mem_net_out,
                data_out     => sig_data_mem_out );
 
 
