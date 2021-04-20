@@ -27,7 +27,7 @@ use IEEE.STD_LOGIC_UNSIGNED.ALL;
 entity instruction_memory is
     port ( reset    : in  std_logic;
            clk      : in  std_logic;
-           addr_in  : in  std_logic_vector(4 downto 0);
+           addr_in  : in  std_logic_vector(5 downto 0);
            insn_out : out std_logic_vector(15 downto 0) );
 end instruction_memory;
 
@@ -70,30 +70,26 @@ begin
 --            set_sig  1000    8
 --            store    1001    9
 
-
-            
-            
-            
+ 
               -- main:
-              var_insn_mem(0)  := X"1010";    -- load $1,$0,0
+              var_insn_mem(0)   := X"1010";    -- load $1,$0,0
 
               -- while
-         
-              var_insn_mem(1)  := X"8000";    -- set_signal 0,0,"0000"
+              var_insn_mem(1)   := X"8000";    -- set_signal 0,0,"0000"
               
               --recv_done
-              var_insn_mem(2)  := X"8000";    -- set_signal 0,0,"0000"
-              var_insn_mem(3)  := X"2101";    -- bne $1,$0,1(while)
-              var_insn_mem(4)  := X"0000";    -- nop
+              var_insn_mem(2)   := X"8000";    -- set_signal 0,0,"0000"
+              var_insn_mem(3)   := X"2101";    -- bne $1,$0,1(while)
+              var_insn_mem(4)   := X"0000";    -- nop
               
                 --attack
-              var_insn_mem(5)  := X"800C";    -- set_signal 0,0,"1200"
-              var_insn_mem(6)  := X"2101";    -- bne $1,$0,1 (while)
-              var_insn_mem(7)  := X"0000";    -- nop
+              var_insn_mem(5)   := X"800C";    -- set_signal 0,0,"1200"
+              var_insn_mem(6)   := X"2101";    -- bne $1,$0,1 (while)
+              var_insn_mem(7)   := X"0000";    -- nop
               
               -- error
-              var_insn_mem(8)  := X"800A";    -- set_signal 0,0,"1010"
-              var_insn_mem(9)  := X"2522";    -- bne $1,$0,2 (while)
+              var_insn_mem(8)   := X"800A";    -- set_signal 0,0,"1010"
+              var_insn_mem(9)   := X"2522";    -- bne $1,$0,2 (while)
               var_insn_mem(10)  := X"0000";    -- nop 
               
               --do_recieve
@@ -113,8 +109,7 @@ begin
               var_insn_mem(24)  := X"8009";    -- set_signal $0,$0,"1001"
               var_insn_mem(25)  := X"2102";    -- bne $1,$0,2 (recv_done)
               var_insn_mem(26)  := X"0000";    -- nop
-              
-            
+                          
             
               --do_send  
               var_insn_mem(27)  := X"8008";    -- set_signal 0,0,"1000"

@@ -67,11 +67,11 @@ architecture behavioural of control_unit is
 constant OP_LOAD   : std_logic_vector(3 downto 0) := "0001";
 constant OP_BNE    : std_logic_vector(3 downto 0) := "0010";
 constant OP_STORE  : std_logic_vector(3 downto 0) := "0011";
-constant OP_BF     : std_logic_vector(3 downto 0) := "0100";    -- TODO
-constant OP_ROL    : std_logic_vector(3 downto 0) := "0101";    -- TODO
-constant OP_XOR    : std_logic_vector(3 downto 0) := "0110";    -- TODO
-constant OP_PARITY : std_logic_vector(3 downto 0) := "0111";    -- TODO
-constant OP_SETSIG : std_logic_vector(3 downto 0) := "1000";    -- TODO
+constant OP_BF     : std_logic_vector(3 downto 0) := "0100";    
+constant OP_ROL    : std_logic_vector(3 downto 0) := "0101";    
+constant OP_XOR    : std_logic_vector(3 downto 0) := "0110";    
+constant OP_PARITY : std_logic_vector(3 downto 0) := "0111";    
+constant OP_SETSIG : std_logic_vector(3 downto 0) := "1000";    
 
 
 
@@ -105,8 +105,8 @@ begin
                   '0';
 
     status_reg_write_enable <=
-        '1' when opcode = OP_SETSIG else
-        '0';
+                  '1' when opcode = OP_SETSIG else
+                  '0';
 
     -- alu ctr
     process (opcode)

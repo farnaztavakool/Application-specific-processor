@@ -33,7 +33,9 @@ entity io_unit is port (
 end entity;
 
 architecture behaviour of io_unit is
+	
 	signal busy : std_logic;	-- Needs to be read from, hence the need for this signal
+	
 begin
 	busy_out <= busy;
 	status_registers: process(clock, reset) is begin

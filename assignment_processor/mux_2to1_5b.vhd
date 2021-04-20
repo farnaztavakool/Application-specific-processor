@@ -1,9 +1,6 @@
 ---------------------------------------------------------------------------
--- mux_2to1_4b.vhd - 4-bit 2-to-1 Multiplexer Implementation
+-- mux_2to1_6b.vhd - 6-bit 2-to-1 Multiplexer Implementation
 --
---
--- Copyright (C) 2006 by Lih Wen Koh (lwkoh@cse.unsw.edu.au)
--- All Rights Reserved. 
 --
 -- The single-cycle processor core is provided AS IS, with no warranty of 
 -- any kind, express or implied. The user of the program accepts full 

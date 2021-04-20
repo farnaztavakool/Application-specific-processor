@@ -63,14 +63,14 @@ architecture structural of single_cycle_core is
 component program_counter is
     port ( reset    : in  std_logic;
            clk      : in  std_logic;
-           addr_in  : in  std_logic_vector(4 downto 0);
-           addr_out : out std_logic_vector(4 downto 0) );
+           addr_in  : in  std_logic_vector(5 downto 0);
+           addr_out : out std_logic_vector(5 downto 0) );
 end component;
 
 component instruction_memory is
     port ( reset    : in  std_logic;
            clk      : in  std_logic;
-           addr_in  : in  std_logic_vector(4 downto 0);
+           addr_in  : in  std_logic_vector(5 downto 0);
            insn_out : out std_logic_vector(15 downto 0) );
 end component;
 
@@ -86,11 +86,11 @@ component mux_2to1_4b is
            data_out   : out std_logic_vector(3 downto 0) );
 end component;
 
-component mux_2to1_5b is
+component mux_2to1_6b is
     port ( mux_select : in  std_logic;
-               data_a     : in  std_logic_vector(4 downto 0);
-               data_b     : in  std_logic_vector(4 downto 0);
-               data_out   : out std_logic_vector(4 downto 0) );
+           data_a     : in  std_logic_vector(5 downto 0);
+           data_b     : in  std_logic_vector(5 downto 0);
+           data_out   : out std_logic_vector(5 downto 0) );
 end component;
 
 component mux_2to1_16b is
@@ -129,10 +129,10 @@ component register_file is
            read_data_b     : out std_logic_vector(15 downto 0) );
 end component;
 
-component adder_4b is
-      port ( src_a     : in  std_logic_vector(4 downto 0);
-           src_b     : in  std_logic_vector(4 downto 0);
-           sum       : out std_logic_vector(4 downto 0);
+component adder_6b is
+    port ( src_a     : in  std_logic_vector(5 downto 0);
+           src_b     : in  std_logic_vector(5 downto 0);
+           sum       : out std_logic_vector(5 downto 0);
            carry_out : out std_logic );
 end component;
 
@@ -207,11 +207,11 @@ end component;
 
 -- signal labelling scheme: if it exisits in a stage, then that stage will be in the name
 -- this is particularly needed when the signal is propogated through to other stages
-signal sig_next_pc              : std_logic_vector(4 downto 0);
-signal sig_curr_pc              : std_logic_vector(4 downto 0);
-signal sig_one_4b               : std_logic_vector(4 downto 0);
-signal sig_pc_inc               : std_logic_vector(4 downto 0);
-signal sig_branch_pc            : std_logic_vector(4 downto 0);
+signal sig_next_pc              : std_logic_vector(5 downto 0);
+signal sig_curr_pc              : std_logic_vector(5 downto 0);
+signal sig_one_4b               : std_logic_vector(5 downto 0);
+signal sig_pc_inc               : std_logic_vector(5 downto 0);
+signal sig_branch_pc            : std_logic_vector(5 downto 0);
 signal sig_pc_carry_out         : std_logic;
 signal sig_pc_branch_carry_out  : std_logic;
 signal sig_insn                 : std_logic_vector(15 downto 0);
@@ -284,18 +284,16 @@ signal sig_frwd_ctr_b           : std_logic_vector(1 downto 0);
 signal sig_frwd_a               : std_logic_vector(15 downto 0);
 signal sig_frwd_b               : std_logic_vector(15 downto 0);
 
+
 -- Hardcoded instruction addresses for send/recieve
-
-
-signal do_recv_addr              : std_logic_vector(4 downto 0);
-signal do_send_addr              : std_logic_vector(4 downto 0);
-signal pc_mux_select             : std_logic_vector(4 downto 0);
+signal do_recv_addr              : std_logic_vector(5 downto 0);
+signal do_send_addr              : std_logic_vector(5 downto 0);
+signal pc_mux_select             : std_logic_vector(5 downto 0);
 
 -- mux results
-signal sig_next_pc_mux            :std_logic_vector(4 downto 0);
-signal mux_recv_next              :std_logic_vector(4 downto 0);
-signal mux_next_send              :std_logic_vector(4 downto 0);
-
+signal sig_next_pc_mux            :std_logic_vector(5 downto 0);
+signal mux_recv_next              :std_logic_vector(5 downto 0);
+signal mux_next_send              :std_logic_vector(5 downto 0);
 
 -- mux signals
 signal recv_busy                  :std_logic;
@@ -309,9 +307,6 @@ signal set_signal                 :std_logic_vector(3 downto 0);
 
 begin
 
---    out_sig_if <= sig_id_insn;
-
-
     recv_busy <= recv and (not set_signal(3));
     send_busy <= send and (not set_signal(3));
 
@@ -323,13 +318,13 @@ begin
 
 
     -- IF: instruction fetch
-    sig_one_4b <= "00001";
+    sig_one_4b <= "000001";
     
-    -- address is 11
-    do_recv_addr <= "01011";
+    -- do_recv address is 11
+    do_recv_addr <= "001011";
     
-    -- address is 27
-    do_send_addr <= "11011";
+    -- do_send address is 27
+    do_send_addr <= "011011";
 
     pc : program_counter
     port map ( reset    => reset,
@@ -337,24 +332,19 @@ begin
                addr_in  => sig_next_pc,
                addr_out => sig_curr_pc );
 
-    next_pc : adder_4b
+    next_pc : adder_6b
     port map ( src_a     => sig_curr_pc,
                src_b     => sig_one_4b,
                sum       => sig_pc_inc,
                carry_out => sig_pc_carry_out );
 
 
-    -- branch add is 3 bits need to concat a zero bit at the begining
-    sig_branch_pc <= '0' & sig_id_insn(3 downto 0);
+    -- branch add is 3 bits need to concat two zero bits at the begining
+    sig_branch_pc <= "00" & sig_id_insn(3 downto 0);
     
 
-
-
-
     -- next_pc
-
-
-    next_pc_mux: mux_2to1_5b
+    next_pc_mux: mux_2to1_6b
     port map ( mux_select => sig_xor_branch_mux,
                data_a     => sig_pc_inc,
                data_b     => sig_branch_pc,
@@ -362,15 +352,14 @@ begin
 
 
     -- recv mux
-    recv_pc_mux: mux_2to1_5b
+    recv_pc_mux: mux_2to1_6b
     port map ( mux_select => recv_busy,
                data_a     => sig_next_pc_mux,
                data_b     => do_recv_addr,
                data_out   => mux_recv_next );
 
     -- send mux
-
-    send_pc_mux: mux_2to1_5b
+    send_pc_mux: mux_2to1_6b
     port map ( mux_select => send_busy,
                data_a     => mux_recv_next,
                data_b     => do_send_addr,
@@ -458,6 +447,7 @@ begin
         reg_3 => sig_id_special_reg_data(31 downto 16),
         reg_4 => sig_id_special_reg_data(47 downto 32)
     );
+    
     -- EX: execute instruction
 
     -- signals through stages are set up using an N bit generic
