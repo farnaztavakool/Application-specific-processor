@@ -1,4 +1,4 @@
 .vscode
 assignment_processor/pretty_signals.wcfg
-assignment_processor/network.txt
-assignment_processor/cpu.txt
+# assignment_processor/network.txt
+# assignment_processor/cpu.txt
