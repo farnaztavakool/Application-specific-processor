@@ -149,9 +149,9 @@ begin
               var_insn_mem(6)   := X"0000";    -- nop
               
                 --attack
-              var_insn_mem(7)   := X"800C";    -- set_signal 0,0,"1200"
-              var_insn_mem(8)   := X"2101";    -- bne $1,$0,1 (while)
-              var_insn_mem(9)   := X"0000";    -- nop
+              var_insn_mem(5)   := X"800C";    -- set_signal 0,0,"1100"
+              var_insn_mem(6)   := X"2101";    -- bne $1,$0,1 (while)
+              var_insn_mem(7)   := X"0000";    -- nop
               
               -- error
               var_insn_mem(10)   := X"800A";    -- set_signal 0,0,"1010"
