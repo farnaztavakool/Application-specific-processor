@@ -47,7 +47,7 @@ component single_cycle_core is
            busy              : out  std_logic;
            attack            : out  std_logic;
            error             : out  std_logic;
-           valid             : out std_logic;
+           valid             : buffer std_logic;
            network_out       : out  std_logic_vector(19 downto 0);
            cpu_out           : out  std_logic_vector(15 downto 0));
 

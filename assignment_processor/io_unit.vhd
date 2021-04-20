@@ -34,7 +34,9 @@ architecture behaviour of io_unit is
 	signal busy : std_logic;	-- Needs to be read from, hence the need for this signal
 	
 begin
+	
 	busy_out <= busy;
+	
 	status_registers: process(clock, reset) is begin
 		if reset = '1' then
 			-- Reset case
@@ -62,8 +64,8 @@ begin
 	-- $4 contains input tag
 
 	reg_2 <=
-		network_in(19 downto 4) when net_data_avail = '1' else
-		cpu_in(16 downto 1) when cpu_data_avail = '1' else
+		network_in(19 downto 4)   when net_data_avail = '1' else
+		cpu_in(16 downto 1)       when cpu_data_avail = '1' else
 		(others => '0');
 
 	reg_3 <=

@@ -38,7 +38,7 @@ entity register_file is
 
 
 
-
+           reg_2_read_data : out std_logic_vector(15 downto 0);
            read_data_a     : out std_logic_vector(15 downto 0);
            read_data_b     : out std_logic_vector(15 downto 0) );
 end register_file;
@@ -99,6 +99,9 @@ begin
             -- the following are probe signals (for simulation purpose)
             sig_regfile <= var_regfile;
         end if;
+
+        -- output the data from reg 2 i.e incomming data
+        reg_2_read_data <= var_regfile(2);
 
     end process;
 end behavioral;

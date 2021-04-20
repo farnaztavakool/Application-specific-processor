@@ -22,7 +22,7 @@ while:
     # error <= 0;
 
     # signal register: busy | attack | error | valid
-    set_sig 0000       # set three bit ctr sig to 000
+    set_sig 0000       # set three bit ctr sig to 0000
 
     # go to do_recieve if recv = 1
     #                                                   check_recv do_recieve; nop 

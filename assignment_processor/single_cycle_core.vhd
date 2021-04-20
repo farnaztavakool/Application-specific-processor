@@ -53,7 +53,7 @@ entity single_cycle_core is
            busy              : out  std_logic;
            attack            : out  std_logic;
            error             : out  std_logic;
-           valid             : out std_logic;
+           valid             : buffer  std_logic;
            network_out       : out  std_logic_vector(19 downto 0);
            cpu_out           : out  std_logic_vector(15 downto 0));
 end single_cycle_core;
@@ -124,7 +124,8 @@ component register_file is
            reg_2_write_data : in std_logic_vector(15 downto 0);
            reg_3_write_data : in std_logic_vector(15 downto 0);
            reg_4_write_data : in std_logic_vector(15 downto 0);
-
+            
+           reg_2_read_data : out std_logic_vector(15 downto 0);
            read_data_a     : out std_logic_vector(15 downto 0);
            read_data_b     : out std_logic_vector(15 downto 0) );
 end component;
@@ -292,25 +293,31 @@ signal do_send_addr              : std_logic_vector(5 downto 0);
 signal pc_mux_select             : std_logic_vector(5 downto 0);
 
 -- mux results
-signal sig_next_pc_mux            :std_logic_vector(5 downto 0);
-signal mux_recv_next              :std_logic_vector(5 downto 0);
-signal mux_next_send              :std_logic_vector(5 downto 0);
+signal sig_next_pc_mux           : std_logic_vector(5 downto 0);
+signal mux_recv_next             : std_logic_vector(5 downto 0);
+signal mux_next_send             : std_logic_vector(5 downto 0);
 
 -- mux signals
-signal recv_busy                  :std_logic;
-signal send_busy                  :std_logic;
+signal recv_busy                 : std_logic;
+signal send_busy                 : std_logic;
 
 
 -- busy|attack|error|valid
-signal set_signal                 :std_logic_vector(3 downto 0);
+signal set_signal                : std_logic_vector(3 downto 0);
 
 -- net_out
-signal mem_net_out                :std_logic_vector(32 downto 0):= X"00000000";
+signal mem_net_out               : std_logic_vector(31 downto 0):= X"00000000";
+
+-- cpu out
+signal sig_cpu_out               : std_logic_vector(15 downto 0) := X"0000";
 
 
 begin
 
-    network_out <= mem_net_out(19 downto 0);
+    network_out <=  mem_net_out(19 downto 0);
+                   
+    cpu_out     <= sig_cpu_out  when (valid = '1') else 
+                   (others => '0');
 
     recv_busy <= recv and (not set_signal(3));
     send_busy <= send and (not set_signal(3));
@@ -424,7 +431,8 @@ begin
                reg_2_write_data => sig_id_special_reg_data(15 downto 0),
                reg_3_write_data => sig_id_special_reg_data(31 downto 16),
                reg_4_write_data => sig_id_special_reg_data(47 downto 32),
-
+               
+               reg_2_read_data => sig_cpu_out,
                read_data_a     => sig_read_data_a,
                read_data_b     => sig_read_data_b );
 
