@@ -33,7 +33,7 @@ end instruction_memory;
 
 architecture behavioral of instruction_memory is
 
-type mem_array is array(0 to 48) of std_logic_vector(15 downto 0);
+type mem_array is array(0 to 36) of std_logic_vector(15 downto 0);
 signal sig_insn_mem : mem_array;
 
 begin
@@ -70,135 +70,127 @@ begin
 --            set_sig  1000    8
 --            store    1001    9
 
-
-                -- no nop after set_sig TODO
-              -- main:
+               -- main:
 --              var_insn_mem(0)   := X"1010";    -- load $1,$0,0
+
 
               -- while
 --              var_insn_mem(1)   := X"8000";    -- set_signal 0,0,"0000"
+--              var_insn_mem(2)   := X"0000";    -- nop
+--              var_insn_mem(3)   := X"0000";    -- nop
 
               --recv_done
---              var_insn_mem(2)   := X"8000";    -- set_signal 0,0,"0000"
---              var_insn_mem(3)   := X"2101";    -- bne $1,$0,1(while)
---              var_insn_mem(4)   := X"0000";    -- nop
+--              var_insn_mem(4)   := X"8000";    -- set_signal 0,0,"0000"
+--              var_insn_mem(5)   := X"2101";    -- bne $1,$0,1(while)
+--              var_insn_mem(6)   := X"0000";    -- nop
 
                 --attack
---              var_insn_mem(5)   := X"800C";    -- set_signal 0,0,"1200"
---              var_insn_mem(6)   := X"2101";    -- bne $1,$0,1 (while)
---              var_insn_mem(7)   := X"0000";    -- nop
+--              var_insn_mem(7)   := X"800C";    -- set_signal 0,0,"1100"
+--              var_insn_mem(8)   := X"2101";    -- bne $1,$0,1 (while)
+--              var_insn_mem(9)   := X"0000";    -- nop
 
               -- error
---              var_insn_mem(8)   := X"800A";    -- set_signal 0,0,"1010"
---              var_insn_mem(9)   := X"2522";    -- bne $1,$0,2 (while)
---              var_insn_mem(10)  := X"0000";    -- nop
+--              var_insn_mem(10)  := X"800A";    -- set_signal 0,0,"1010"
+--              var_insn_mem(11)  := X"2521";    -- bne $1,$0,1 (while)
+--              var_insn_mem(12)  := X"0000";    -- nop
 
               --do_recieve
---              var_insn_mem(11)  := X"8008";    -- set_signal 0,0,"1000"
---              var_insn_mem(12)  := X"0000";    -- nop
---              var_insn_mem(13)  := X"4215";    -- bit_flip $5,$2,$1
+--              var_insn_mem(13)  := X"8008";    -- set_signal 0,0,"1000"
 --              var_insn_mem(14)  := X"0000";    -- nop
---              var_insn_mem(15)  := X"0000";    -- nop
---              var_insn_mem(16)  := X"5516";    -- rol $6,$5,$1
+--              var_insn_mem(15)  := X"4215";    -- bit_flip $5,$2,$1
+--             var_insn_mem(16)  := X"0000";    -- nop
 --              var_insn_mem(17)  := X"0000";    -- nop
---              var_insn_mem(18)  := X"0000";    -- nop
---              var_insn_mem(19)  := X"6607";    -- xor $7,$6,$0
+--              var_insn_mem(18)  := X"5516";    -- rol $6,$5,$1
+--              var_insn_mem(19)  := X"0000";    -- nop
 --              var_insn_mem(20)  := X"0000";    -- nop
---              var_insn_mem(21)  := X"0000";    -- nop
---              var_insn_mem(22)  := X"2745";    -- bne $7,$4,attack
+--              var_insn_mem(21)  := X"6607";    -- xor $7,$6,$0
+--              var_insn_mem(22)  := X"0000";    -- nop
 --              var_insn_mem(23)  := X"0000";    -- nop
---              var_insn_mem(24)  := X"8009";    -- set_signal $0,$0,"1001"
---              var_insn_mem(25)  := X"2102";    -- bne $1,$0,2 (recv_done)
---              var_insn_mem(26)  := X"0000";    -- nop
+--              var_insn_mem(24)  := X"2747";    -- bne $7,$4,7 (attack)
+--              var_insn_mem(25)  := X"0000";    -- nop
+--              var_insn_mem(26)  := X"8009";    -- set_signal $0,$0,"1001"
+--              var_insn_mem(27)  := X"2102";    -- bne $1,$0,2 (recv_done)
+--              var_insn_mem(28)  := X"0000";    -- nop
 
 
               --do_send
---              var_insn_mem(27)  := X"8008";    -- set_signal 0,0,"1000"
---              var_insn_mem(28)  := X"0000";    -- nop
---              var_insn_mem(29)  := X"7235";    -- parity $5,$2,$3
+--              var_insn_mem(29)  := X"8008";    -- set_signal 0,0,"1000"
 --              var_insn_mem(30)  := X"0000";    -- nop
---              var_insn_mem(31)  := X"0000";    -- nop
---              var_insn_mem(32)  := X"252A";    -- bne $5,$2,10 (error)
+--              var_insn_mem(31)  := X"7235";    -- parity $5,$2,$3
+--              var_insn_mem(32)  := X"0000";    -- nop
 --              var_insn_mem(33)  := X"0000";    -- nop
---              var_insn_mem(34)  := X"4215";    -- bit_flip $5,$2,$1
+--              var_insn_mem(34)  := X"253A";    -- bne $5,$3,10 (error)
 --              var_insn_mem(35)  := X"0000";    -- nop
---              var_insn_mem(36)  := X"0000";    -- nop
---              var_insn_mem(37)  := X"5516";    -- rol $6,$5,$1
+
+--              var_insn_mem(36)  := X"4215";    -- bit_flip $5,$2,$1
+--              var_insn_mem(37)  := X"0000";    -- nop
 --              var_insn_mem(38)  := X"0000";    -- nop
---              var_insn_mem(39)  := X"0000";    -- nop
---              var_insn_mem(40)  := X"6607";    -- xor $7,$6,$0
+--              var_insn_mem(39)  := X"5516";    -- rol $6,$5,$1
+--              var_insn_mem(40)  := X"0000";    -- nop
 --              var_insn_mem(41)  := X"0000";    -- nop
---              var_insn_mem(42)  := X"0000";    -- nop
---              var_insn_mem(43)  := X"9021";    -- store $2,$0,1
---              var_insn_mem(44)  := X"9072";    -- store $7,$0,1
---              var_insn_mem(45)  := X"2522";    -- bne $1,$0,2 (while)
---              var_insn_mem(46)  := X"0000";    -- nop
+--              var_insn_mem(42)  := X"6607";    -- xor $7,$6,$0
+--              var_insn_mem(43)  := X"0000";    -- nop
+--              var_insn_mem(44)  := X"0000";    -- nop
+--              var_insn_mem(45)  := X"3021";    -- store $2,$0,1
+--              var_insn_mem(46)  := X"3072";    -- store $7,$0,1
+--              var_insn_mem(47)  := X"2521";    -- bne $1,$0,1 (while)   -- TODO use branch delay slot
+--              var_insn_mem(48)  := X"0000";    -- nop
+--              
+--              var_insn_mem(0)   := X"1010";    -- load $1,$0,0
 
-               -- main:
+              -- main:
               var_insn_mem(0)   := X"1010";    -- load $1,$0,0
-
 
               -- while
               var_insn_mem(1)   := X"8000";    -- set_signal 0,0,"0000"
-              var_insn_mem(2)   := X"0000";    -- nop
-              var_insn_mem(3)   := X"0000";    -- nop
 
               --recv_done
-              var_insn_mem(4)   := X"8000";    -- set_signal 0,0,"0000"
-              var_insn_mem(5)   := X"2101";    -- bne $1,$0,1(while)
-              var_insn_mem(6)   := X"0000";    -- nop
+              var_insn_mem(2)   := X"8000";    -- set_signal 0,0,"0000"
+              var_insn_mem(3)   := X"2101";    -- bne $1,$0,1(while)
+              var_insn_mem(4)   := X"0000";    -- nop
 
                 --attack
-              var_insn_mem(7)   := X"800C";    -- set_signal 0,0,"1100"
-              var_insn_mem(8)   := X"2101";    -- bne $1,$0,1 (while)
-              var_insn_mem(9)   := X"0000";    -- nop
+              var_insn_mem(5)   := X"800C";    -- set_signal 0,0,"1100"
+              var_insn_mem(6)   := X"2101";    -- bne $1,$0,1 (while)
+              var_insn_mem(7)   := X"0000";    -- nop
 
               -- error
-              var_insn_mem(10)  := X"800A";    -- set_signal 0,0,"1010"
-              var_insn_mem(11)  := X"2521";    -- bne $1,$0,1 (while)
-              var_insn_mem(12)  := X"0000";    -- nop
+              var_insn_mem(8)  := X"800A";    -- set_signal 0,0,"1010"
+              var_insn_mem(9)  := X"2521";    -- bne $1,$0,1 (while)
+              var_insn_mem(10)  := X"0000";    -- nop
 
               --do_recieve
-              var_insn_mem(13)  := X"8008";    -- set_signal 0,0,"1000"
-              var_insn_mem(14)  := X"0000";    -- nop
-              var_insn_mem(15)  := X"4215";    -- bit_flip $5,$2,$1
+              var_insn_mem(11)  := X"8008";    -- set_signal 0,0,"1000"
+              var_insn_mem(12)  := X"0000";    -- nop
+              var_insn_mem(13)  := X"4215";    -- bit_flip $5,$2,$1
+              var_insn_mem(14)  := X"5515";    -- rol $5,$5,$1
+              var_insn_mem(15)  := X"6505";    -- xor $5,$5,$0
               var_insn_mem(16)  := X"0000";    -- nop
               var_insn_mem(17)  := X"0000";    -- nop
-              var_insn_mem(18)  := X"5516";    -- rol $6,$5,$1
+              var_insn_mem(18)  := X"2545";    -- bne $5,$4,5 (attack)
               var_insn_mem(19)  := X"0000";    -- nop
-              var_insn_mem(20)  := X"0000";    -- nop
-              var_insn_mem(21)  := X"6607";    -- xor $7,$6,$0
+              var_insn_mem(20)  := X"8009";    -- set_signal $0,$0,"1001"
+              var_insn_mem(21)  := X"2102";    -- bne $1,$0,2 (recv_done)
               var_insn_mem(22)  := X"0000";    -- nop
-              var_insn_mem(23)  := X"0000";    -- nop
-              var_insn_mem(24)  := X"2747";    -- bne $7,$4,7 (attack)
-              var_insn_mem(25)  := X"0000";    -- nop
-              var_insn_mem(26)  := X"8009";    -- set_signal $0,$0,"1001"
-              var_insn_mem(27)  := X"2102";    -- bne $1,$0,2 (recv_done)
-              var_insn_mem(28)  := X"0000";    -- nop
 
 
               --do_send
-              var_insn_mem(29)  := X"8008";    -- set_signal 0,0,"1000"
-              var_insn_mem(30)  := X"0000";    -- nop
-              var_insn_mem(31)  := X"7235";    -- parity $5,$2,$3
-              var_insn_mem(32)  := X"0000";    -- nop
-              var_insn_mem(33)  := X"0000";    -- nop
-              var_insn_mem(34)  := X"253A";    -- bne $5,$3,10 (error)
-              var_insn_mem(35)  := X"0000";    -- nop
+              var_insn_mem(23)  := X"8008";    -- set_signal 0,0,"1000"
+              var_insn_mem(24)  := X"0000";    -- nop
+              var_insn_mem(25)  := X"7235";    -- parity $5,$2,$3
+              var_insn_mem(26)  := X"0000";    -- nop
+              var_insn_mem(27)  := X"0000";    -- nop
+              var_insn_mem(28)  := X"2538";    -- bne $5,$3,8 (error)
+              var_insn_mem(29)  := X"0000";    -- nop
 
-              var_insn_mem(36)  := X"4215";    -- bit_flip $5,$2,$1
-              var_insn_mem(37)  := X"0000";    -- nop
-              var_insn_mem(38)  := X"0000";    -- nop
-              var_insn_mem(39)  := X"5516";    -- rol $6,$5,$1
-              var_insn_mem(40)  := X"0000";    -- nop
-              var_insn_mem(41)  := X"0000";    -- nop
-              var_insn_mem(42)  := X"6607";    -- xor $7,$6,$0
-              var_insn_mem(43)  := X"0000";    -- nop
-              var_insn_mem(44)  := X"0000";    -- nop
-              var_insn_mem(45)  := X"3021";    -- store $2,$0,1
-              var_insn_mem(46)  := X"3072";    -- store $7,$0,1
-              var_insn_mem(47)  := X"2521";    -- bne $1,$0,1 (while)   -- TODO use branch delay slot
-              var_insn_mem(48)  := X"0000";    -- nop
+              var_insn_mem(30)  := X"4215";    -- bit_flip $5,$2,$1
+              var_insn_mem(31)  := X"5516";    -- rol $6,$5,$1
+              var_insn_mem(32)  := X"6607";    -- xor $7,$6,$0
+              var_insn_mem(33)  := X"3021";    -- store $2,$0,1
+              var_insn_mem(34)  := X"3072";    -- store $7,$0,1
+              var_insn_mem(35)  := X"2521";    -- bne $1,$0,1 (while)  
+              var_insn_mem(36)  := X"0000";    -- nop
+              
 
 
 

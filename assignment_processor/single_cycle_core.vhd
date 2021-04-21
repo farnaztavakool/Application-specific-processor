@@ -155,16 +155,16 @@ component regne is
 			Q 		: out 	std_logic_vector(N-1 downto 0));
 end component;
 
---component forwarding_unit is
---    Port (mem_reg_write : in std_logic;
---          wb_reg_write  : in std_logic;
---          mem_rd        : in std_logic_vector(3 downto 0);
---          wb_rd         : in std_logic_vector(3 downto 0);
---          ex_rs         : in std_logic_vector(3 downto 0);
---          ex_rt         : in std_logic_vector(3 downto 0);
---          frwd_ctr_a    : out std_logic_vector(1 downto 0);
---          frwd_ctr_b    : out std_logic_vector(1 downto 0));
---end component;
+component forwarding_unit is
+    Port (mem_reg_write : in std_logic;
+          wb_reg_write  : in std_logic;
+          mem_rd        : in std_logic_vector(3 downto 0);
+          wb_rd         : in std_logic_vector(3 downto 0);
+          ex_rs         : in std_logic_vector(3 downto 0);
+          ex_rt         : in std_logic_vector(3 downto 0);
+          frwd_ctr_a    : out std_logic_vector(1 downto 0);
+          frwd_ctr_b    : out std_logic_vector(1 downto 0));
+end component;
 
 component mux_4to1_16b is
  port ( mux_select : in  std_logic_vector(1 downto 0);
@@ -333,10 +333,10 @@ begin
     sig_one_4b <= "000001";
 
     -- do_recv address is 11
-    do_recv_addr <= "001101";
+    do_recv_addr <= "001011";
 
-    -- do_send address is 27
-    do_send_addr <= "011101";
+    -- do_send address is 23
+    do_send_addr <= "010111";
 
     pc : program_counter
     port map ( reset    => reset,
@@ -541,37 +541,39 @@ begin
 
 
     -- forwarding logic
-    -- frwd_unit : forwarding_unit
-    -- Port map (mem_reg_write => sig_mem_reg_write,
-    --           wb_reg_write  => sig_wb_reg_write,
-    --           mem_rd        => sig_mem_write_register,
-    --           wb_rd         => sig_mem_write_register,
-    --           ex_rs         => sig_ex_reg_2,
-    --           ex_rt         => sig_ex_reg_1,
-    --           frwd_ctr_a    => sig_frwd_ctr_a,
-    --           frwd_ctr_b    => sig_frwd_ctr_b);
+    frwd_unit : forwarding_unit
+     Port map (mem_reg_write => sig_mem_reg_write,
+               wb_reg_write  => sig_wb_reg_write,
+               mem_rd        => sig_mem_write_register,
+               wb_rd         => sig_wb_write_register,
+               ex_rs         => sig_ex_reg_2,
+               ex_rt         => sig_ex_reg_1,
+               frwd_ctr_a    => sig_frwd_ctr_a,
+               frwd_ctr_b    => sig_frwd_ctr_b);
 
-    -- mux_alu_src_a : mux_4to1_16b
-    --  port map ( mux_select => sig_frwd_ctr_a,
-    --             data_a     => sig_ex_read_data_a,   -- no frwd  00
-    --             data_b     => sig_ex_read_data_a,   -- no frwd  01
-    --             data_c     => sig_mem_alu_ctr_out,  -- mem frwd 10
-    --             data_d     => sig_wb_write_data,    -- wb fwrd  11
-    --             data_out   => sig_frwd_a);
+    mux_alu_src_a : mux_4to1_16b
+      port map ( mux_select => sig_frwd_ctr_a,
+                 data_a     => sig_ex_read_data_a,   -- no frwd  00
+                 data_b     => sig_ex_read_data_a,   -- no frwd  01
+                 data_c     => sig_mem_alu_ctr_out,  -- mem frwd 10
+                 data_d     => sig_wb_write_data,    -- wb fwrd  11
+                 data_out   => sig_frwd_a);
 
-    -- mux_alu_src_b : mux_4to1_16b
-    --  port map ( mux_select => sig_frwd_ctr_b,
-    --             data_a     => sig_alu_src_b,        -- no frwd  00
-    --             data_b     => sig_alu_src_b,        -- no frwd  01
-    --             data_c     => sig_mem_alu_ctr_out,  -- mem frwd 10
-    --             data_d     => sig_wb_write_data,    -- wb fwrd  11
-    --             data_out   => sig_frwd_b);
+    mux_alu_src_b : mux_4to1_16b
+      port map ( mux_select => sig_frwd_ctr_b,
+                 data_a     => sig_alu_src_b,        -- no frwd  00
+                 data_b     => sig_alu_src_b,        -- no frwd  01
+                 data_c     => sig_mem_alu_ctr_out,  -- mem frwd 10
+                 data_d     => sig_wb_write_data,    -- wb fwrd  11
+                 data_out   => sig_frwd_b);
 
 
     -- ALU not using forwarding logic
     alu: ALU_wrapper
-      Port map (src_a   => sig_ex_read_data_a,
-                src_b   => sig_alu_src_b,
+      Port map (--src_a   => sig_ex_read_data_a,
+                --src_b   => sig_alu_src_b,
+                src_a   => sig_frwd_a,
+                src_b   => sig_frwd_b,
                 ctr     => sig_ex_alu_ctr,
                 alu_out => sig_alu_ctr_out);
 
