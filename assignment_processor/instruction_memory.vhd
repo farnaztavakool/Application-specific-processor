@@ -33,7 +33,7 @@ end instruction_memory;
 
 architecture behavioral of instruction_memory is
 
-type mem_array is array(0 to 36) of std_logic_vector(15 downto 0);
+type mem_array is array(0 to 37) of std_logic_vector(15 downto 0);
 signal sig_insn_mem : mem_array;
 
 begin
@@ -70,6 +70,7 @@ begin
 --            set_sig  1000    8
 --            store    1001    9
 
+                -- before data forwarder
                -- main:
 --              var_insn_mem(0)   := X"1010";    -- load $1,$0,0
 
@@ -169,9 +170,8 @@ begin
               var_insn_mem(17)  := X"0000";    -- nop
               var_insn_mem(18)  := X"2545";    -- bne $5,$4,5 (attack)
               var_insn_mem(19)  := X"0000";    -- nop
-              var_insn_mem(20)  := X"8009";    -- set_signal $0,$0,"1001"
-              var_insn_mem(21)  := X"2102";    -- bne $1,$0,2 (recv_done)
-              var_insn_mem(22)  := X"0000";    -- nop
+              var_insn_mem(20)  := X"2102";    -- bne $1,$0,2 (recv_done)
+              var_insn_mem(21)  := X"8009";    -- set_signal $0,$0,"1001"
 
 
               --do_send
@@ -184,12 +184,12 @@ begin
               var_insn_mem(29)  := X"0000";    -- nop
 
               var_insn_mem(30)  := X"4215";    -- bit_flip $5,$2,$1
-              var_insn_mem(31)  := X"5516";    -- rol $6,$5,$1
-              var_insn_mem(32)  := X"6607";    -- xor $7,$6,$0
-              var_insn_mem(33)  := X"3021";    -- store $2,$0,1
-              var_insn_mem(34)  := X"3072";    -- store $7,$0,1
+              var_insn_mem(31)  := X"5515";    -- rol $5,$5,$1
+              var_insn_mem(32)  := X"6505";    -- xor $5,$5,$0
+              var_insn_mem(33)  := X"0000";    -- nop
+              var_insn_mem(34)  := X"3021";    -- store $2,$0,1
               var_insn_mem(35)  := X"2521";    -- bne $1,$0,1 (while)  
-              var_insn_mem(36)  := X"0000";    -- nop
+              var_insn_mem(36)  := X"3052";    -- store $5,$0,2
               
 
 
