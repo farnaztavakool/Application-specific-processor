@@ -136,7 +136,7 @@ begin
 --              var_insn_mem(46)  := X"3072";    -- store $7,$0,1
 --              var_insn_mem(47)  := X"2521";    -- bne $1,$0,1 (while)   -- TODO use branch delay slot
 --              var_insn_mem(48)  := X"0000";    -- nop
---              
+--
 --              var_insn_mem(0)   := X"1010";    -- load $1,$0,0
 
               -- main:
@@ -157,7 +157,7 @@ begin
 
               -- error
               var_insn_mem(8)  := X"800A";    -- set_signal 0,0,"1010"
-              var_insn_mem(9)  := X"2521";    -- bne $1,$0,1 (while)
+              var_insn_mem(9)  := X"2101";    -- bne $1,$0,1 (while)
               var_insn_mem(10)  := X"0000";    -- nop
 
               --do_recieve
@@ -172,7 +172,7 @@ begin
               var_insn_mem(19)  := X"0000";    -- nop
               var_insn_mem(20)  := X"2102";    -- bne $1,$0,2 (recv_done)
               var_insn_mem(21)  := X"8009";    -- set_signal $0,$0,"1001"
-
+            -- 22 missing is intentional
 
               --do_send
               var_insn_mem(23)  := X"8008";    -- set_signal 0,0,"1000"
@@ -188,9 +188,9 @@ begin
               var_insn_mem(32)  := X"6505";    -- xor $5,$5,$0
               var_insn_mem(33)  := X"0000";    -- nop
               var_insn_mem(34)  := X"3021";    -- store $2,$0,1
-              var_insn_mem(35)  := X"2521";    -- bne $1,$0,1 (while)  
-              var_insn_mem(36)  := X"3052";    -- store $5,$0,2
-              
+              var_insn_mem(35)  := X"3052";    -- store $5,$0,2
+              var_insn_mem(36)  := X"2101";    -- bne $1,$0,1 (while)
+
 
 
 
