@@ -46,9 +46,9 @@
 
         set_sig 0,  0,  signal          # put signal into pre-defined status register
 
-        load    rd, rt, addr                # load from addr into rd
+        load    rd, rt, addr            # load from addr into rd
 
-        store   rs, rt, addr                # store rs into addr
+        store   rs, rt, addr            # store rs into addr
 
         
 
